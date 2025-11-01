@@ -140,6 +140,16 @@ export const ScatterX = ({
                   if (name === 'y') return [`${value} skor`, yLabel];
                   return [value, name];
                 }}
+                contentStyle={{
+                  borderRadius: 18,
+                  backgroundColor: 'rgba(15, 23, 42, 0.78)',
+                  border: '1px solid rgba(148, 163, 184, 0.25)',
+                  color: '#f8fafc',
+                  boxShadow: '0 18px 45px rgba(14, 165, 233, 0.15)',
+                  backdropFilter: 'blur(12px)',
+                }}
+                itemStyle={{ color: '#e0f2fe' }}
+                labelStyle={{ color: '#f8fafc', fontWeight: 600 }}
               />
               {grouped.map((group) => (
                 <Scatter

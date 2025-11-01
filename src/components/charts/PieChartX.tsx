@@ -92,11 +92,16 @@ export const PieChartX = ({
               <RechartsTooltip
                 formatter={(value: number) => `${value} (${total === 0 ? 0 : Math.round((value / total) * 100)}%)`}
                 contentStyle={{
-                  borderRadius: 16,
-                  backgroundColor: 'rgba(15, 23, 42, 0.85)',
-                  border: '1px solid rgba(148, 163, 184, 0.3)',
-                  color: 'white',
+                  borderRadius: 18,
+                  backgroundColor: 'rgba(15, 23, 42, 0.78)',
+                  border: '1px solid rgba(148, 163, 184, 0.25)',
+                  color: '#f8fafc',
+                  boxShadow: '0 18px 45px rgba(14, 165, 233, 0.15)',
+                  backdropFilter: 'blur(12px)',
                 }}
+                itemStyle={{ color: '#e0f2fe' }}
+                labelStyle={{ color: '#f8fafc', fontWeight: 600 }}
+                cursor={{ fill: 'rgba(14,165,233,0.08)' }}
               />
               <Legend />
             </PieChart>

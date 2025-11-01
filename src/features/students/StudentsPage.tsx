@@ -8,7 +8,6 @@ import {
   flexRender,
   createColumnHelper,
 } from '@tanstack/react-table';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { saveAs } from 'file-saver';
 import { useOuladData } from '@/lib/dataContext';
 import { useAppStore } from '@/lib/store';
@@ -91,13 +90,6 @@ const StudentsPage = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  const rowVirtualizer = useVirtualizer({
-    count: table.getRowModel().rows.length,
-    estimateSize: () => 64,
-    getScrollElement: () => document.getElementById('students-table-scroll'),
-    overscan: 8,
-  });
-
   const exportCsv = () => {
     const header = table
       .getAllLeafColumns()
@@ -127,7 +119,12 @@ const StudentsPage = () => {
 
   return (
     <main className="mx-auto max-w-7xl space-y-8 px-4 py-8">
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="space-y-8"
+      >
         <header className="space-y-4 rounded-3xl bg-gradient-to-r from-violet-500/20 via-sky-500/10 to-cyan-500/20 p-6 text-slate-900 shadow-glass backdrop-blur-2xl dark:text-white">
           <h1 className="text-3xl font-bold">Students Explorer</h1>
           <p className="max-w-3xl text-sm leading-6 text-slate-700 dark:text-slate-200">
@@ -142,7 +139,7 @@ const StudentsPage = () => {
             <div>
               <CardTitle>Daftar Mahasiswa Terfilter</CardTitle>
               <CardDescription>
-                Tabel virtualized dengan sparkline aktivitas untuk membantu identifikasi pola belajar individu.
+                Kombinasi sparkline dan metrik utama untuk membantu identifikasi pola belajar individu.
               </CardDescription>
             </div>
             <Button variant="primary" size="sm" onClick={exportCsv}>
@@ -151,19 +148,13 @@ const StudentsPage = () => {
             </Button>
           </CardHeader>
           <CardContent>
-            <div
-              id="students-table-scroll"
-              className="max-h-[600px] overflow-auto rounded-2xl border border-white/30"
-            >
-              <table className="min-w-full border-collapse text-sm text-slate-700 dark:text-slate-200">
-                <thead className="sticky top-0 bg-white/70 backdrop-blur-xl dark:bg-slate-900/80">
+            <div className="max-h-[600px] overflow-auto rounded-3xl border border-slate-200/70 bg-white/60 p-2 dark:border-slate-700/60 dark:bg-white/5">
+              <table className="min-w-full border-separate border-spacing-x-0 border-spacing-y-2 text-sm text-slate-700 dark:text-slate-200">
+                <thead className="sticky top-0 z-10 rounded-2xl bg-white/95 text-xs font-semibold uppercase tracking-wide text-slate-500 backdrop-blur-xl dark:bg-slate-900/90 dark:text-slate-300">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
-                        <th
-                          key={header.id}
-                          className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide"
-                        >
+                        <th key={header.id} className="px-4 py-3 text-left">
                           {header.isPlaceholder
                             ? null
                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -172,23 +163,19 @@ const StudentsPage = () => {
                     </tr>
                   ))}
                 </thead>
-                <tbody style={{ height: `${rowVirtualizer.getTotalSize()}px`, position: 'relative' }}>
-                  {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                    const row = table.getRowModel().rows[virtualRow.index];
-                    return (
-                      <tr
-                        key={row.id}
-                        className="absolute inset-x-0 border-b border-white/20 bg-white/40 text-sm last:border-b-0 dark:bg-white/5"
-                        style={{ transform: `translateY(${virtualRow.start}px)` }}
-                      >
-                        {row.getVisibleCells().map((cell) => (
-                          <td key={cell.id} className="px-4 py-3 align-top">
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </td>
-                        ))}
-                      </tr>
-                    );
-                  })}
+                <tbody>
+                  {table.getRowModel().rows.map((row) => (
+                    <tr key={row.id} className="group">
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="bg-white/90 px-4 py-3 align-top text-sm text-slate-700 transition first:rounded-l-2xl last:rounded-r-2xl group-hover:bg-sky-50/80 dark:bg-white/10 dark:text-slate-200 dark:group-hover:bg-slate-800/60"
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

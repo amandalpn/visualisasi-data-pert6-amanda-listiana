@@ -175,7 +175,12 @@ const ModulesPage = () => {
 
   return (
     <main className="mx-auto max-w-7xl space-y-8 px-4 py-8">
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="space-y-8"
+      >
         <header className="space-y-4 rounded-3xl bg-gradient-to-r from-emerald-500/20 via-sky-500/10 to-blue-500/20 p-6 text-slate-900 shadow-glass backdrop-blur-2xl dark:text-white">
           <h1 className="text-3xl font-bold">{moduleHeading}</h1>
           <p className="max-w-4xl text-sm leading-6 text-slate-700 dark:text-slate-200">
@@ -185,7 +190,7 @@ const ModulesPage = () => {
 
         <GlobalFilterBar />
 
-        <section className="grid gap-6 lg:grid-cols-2">
+        <section className="grid gap-8 lg:grid-cols-2">
           <HistogramX
             title="Distribusi Nilai Modul"
             description="Histogram skor akhir mahasiswa yang terkait modul saat ini."

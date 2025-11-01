@@ -109,7 +109,12 @@ const InsightsPage = () => {
 
   return (
     <main className="mx-auto max-w-5xl space-y-8 px-4 py-8">
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="space-y-8"
+      >
         <header className="space-y-4 rounded-3xl bg-gradient-to-r from-rose-500/20 via-amber-500/10 to-violet-500/20 p-6 text-slate-900 shadow-glass backdrop-blur-2xl dark:text-white">
           <h1 className="text-3xl font-bold">Narasi Insight Otomatis</h1>
           <p className="text-sm leading-6 text-slate-700 dark:text-slate-200">
