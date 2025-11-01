@@ -12,7 +12,14 @@ import {
 import { toPng } from 'html-to-image';
 import { Download, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/Card';
 import { cn } from '@/lib/utils';
 
 type BarChartDatum = {
@@ -67,7 +74,7 @@ export const BarChartX = ({
       <CardContent className="flex flex-1 flex-col gap-4">
         <div ref={ref} className="h-full w-full rounded-2xl bg-white/20 p-4 dark:bg-white/5">
           <ResponsiveContainer width="100%" height={height}>
-            <BarChart data={data} barRadius={12}>
+            <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.4)" />
               <XAxis dataKey="key" tick={{ fill: 'var(--chart-axis-color, #334155)' }} />
               <YAxis tick={{ fill: 'var(--chart-axis-color, #334155)' }} />
@@ -80,10 +87,11 @@ export const BarChartX = ({
                 }}
                 cursor={{ fill: 'rgba(79, 70, 229, 0.08)' }}
               />
-              <Legend />
+              _ <Legend />
               <Bar
                 dataKey="value"
                 fill="url(#glass-bar-gradient)"
+                radius={12} // 👈 PROP 'radius' DITAMBAHKAN DI SINI
                 onClick={({ payload }) => {
                   if (payload) {
                     onBarClick?.(payload.key as string, payload as BarChartDatum);
@@ -92,11 +100,12 @@ export const BarChartX = ({
               />
               <defs>
                 <linearGradient id="glass-bar-gradient" x1="0" x2="1" y1="0" y2="1">
-                  <stop offset="0" stopColor="rgba(14,165,233,0.9)" />
+                  _ <stop offset="0" stopColor="rgba(14,165,233,0.9)" />
                   <stop offset="1" stopColor="rgba(139,92,246,0.7)" />
                 </linearGradient>
               </defs>
             </BarChart>
+            {/* 👆 PERBAIKAN SELESAI DI SINI 👆 */}
           </ResponsiveContainer>
         </div>
       </CardContent>

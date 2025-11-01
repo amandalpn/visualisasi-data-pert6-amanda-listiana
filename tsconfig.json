@@ -11,11 +11,11 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    
+
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "noEmit": false,
+    "noEmit": true,
     "jsx": "react-jsx",
     "noUnusedLocals": true,
     "noUnusedParameters": false,

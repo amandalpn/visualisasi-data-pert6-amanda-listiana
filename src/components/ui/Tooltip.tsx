@@ -1,4 +1,5 @@
-import { useFloating, offset, shift, arrow, useHover, useRole, useInteractions } from '@floating-ui/react-dom';
+import { offset, shift, arrow } from '@floating-ui/react-dom'; 
+import { useHover, useRole, useInteractions, useFloating } from '@floating-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   type ReactNode,
@@ -36,8 +37,7 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
       throw new Error('Tooltip memerlukan elemen tunggal sebagai anak.');
     }
     return cloneElement(children, {
-      ref: refs.setReference,
-      ...getReferenceProps(children.props),
+      ...getReferenceProps(children.props as any),
     });
   }, [children, getReferenceProps, refs.setReference]);
 

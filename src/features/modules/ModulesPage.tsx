@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Save, Columns } from 'lucide-react';
-import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender, createColumnHelper } from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender, createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { saveAs } from 'file-saver';
 import { useOuladData } from '@/lib/dataContext';
@@ -27,7 +27,7 @@ const ModulesPage = () => {
   const filters = useAppStore((state) => state.filters);
   const setSelection = useAppStore((state) => state.setSelection);
   const [selectedStudent, setSelectedStudent] = useState<StudentActivityRecord | null>(null);
-  const [sorting, setSorting] = useState([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({
     gender: true,
     region: true,

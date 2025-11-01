@@ -4,7 +4,14 @@ import maplibregl from 'maplibre-gl';
 import { toPng } from 'html-to-image';
 import { Download, Map as MapIcon } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/Card';
 import { cn } from '@/lib/utils';
 
 type Metric = {
@@ -45,6 +52,9 @@ export const ChoroplethMap = ({
     latitude: 54.5,
     longitude: -3.5,
     zoom: 4.5,
+    bearing: 0, // 👈 Tambahkan ini
+    pitch: 0, // 👈 Tambahkan ini
+    padding: { top: 0, bottom: 0, left: 0, right: 0 }, // 👈 Tambahkan ini
   });
 
   useEffect(() => {
@@ -79,7 +89,7 @@ export const ChoroplethMap = ({
         ],
         'fill-opacity': 0.75,
       },
-    }),
+    }) as any,
     [getColorStops],
   );
 
@@ -165,7 +175,10 @@ export const ChoroplethMap = ({
         </Button>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4">
-        <div ref={ref} className="h-full w-full overflow-hidden rounded-3xl border border-white/20 shadow-glass">
+        <div
+          ref={ref}
+          className="h-full w-full overflow-hidden rounded-3xl border border-white/20 shadow-glass"
+        >
           <Map
             mapLib={maplibregl}
             style={{ width: '100%', height }}
@@ -184,7 +197,11 @@ export const ChoroplethMap = ({
               </Source>
             )}
             {hovered && (
-              <Popup longitude={hovered.coordinates[0]} latitude={hovered.coordinates[1]} closeButton={false}>
+              <Popup
+                longitude={hovered.coordinates[0]}
+                latitude={hovered.coordinates[1]}
+                closeButton={false}
+              >
                 <div className="rounded-lg bg-slate-900/80 px-3 py-2 text-xs text-white shadow-lg">
                   <p className="font-semibold">{hovered.name}</p>
                   <p>Total mahasiswa: {metricByRegion[hovered.name]?.value ?? 0}</p>
