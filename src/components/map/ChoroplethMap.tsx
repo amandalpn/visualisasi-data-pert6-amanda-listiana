@@ -36,6 +36,47 @@ type RegionHover = {
 
 const mapStyle = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
 
+const normalizeRegionName = (value: string) => {
+  let normalized = value
+    .toLowerCase()
+    .replace(/\./g, '')
+    .replace(/provinsi\s+/g, '')
+    .replace(/propinsi\s+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (normalized === 'daerah istimewa yogyakarta') return 'di yogyakarta';
+  if (normalized === 'daerah khusus ibukota jakarta') return 'dki jakarta';
+  if (normalized === 'irian jaya timur') return 'papua';
+  if (normalized === 'irian jaya barat') return 'papua barat';
+
+  return normalized;
+};
+
+const displayRegionName = (rawName: string, matchLabel?: string) => {
+  if (matchLabel) {
+    return matchLabel;
+  }
+  const normalized = normalizeRegionName(rawName);
+  switch (normalized) {
+    case 'di yogyakarta':
+      return 'DI Yogyakarta';
+    case 'dki jakarta':
+      return 'DKI Jakarta';
+    case 'papua':
+      return 'Papua';
+    case 'papua barat':
+      return 'Papua Barat';
+    default:
+      return normalized
+        .split(' ')
+        .map((word) =>
+          word.length <= 2 ? word.toUpperCase() : `${word.charAt(0).toUpperCase()}${word.slice(1)}`,
+        )
+        .join(' ');
+  }
+};
+
 export const ChoroplethMap = ({
   title,
   description,
@@ -49,19 +90,19 @@ export const ChoroplethMap = ({
   const [hovered, setHovered] = useState<RegionHover | null>(null);
   const ref = useRef<HTMLDivElement | null>(null);
   const [viewState, setViewState] = useState<ViewState>({
-    latitude: 54.5,
-    longitude: -3.5,
-    zoom: 4.5,
-    bearing: 0, // 👈 Tambahkan ini
-    pitch: 0, // 👈 Tambahkan ini
-    padding: { top: 0, bottom: 0, left: 0, right: 0 }, // 👈 Tambahkan ini
+    latitude: -2.5,
+    longitude: 117,
+    zoom: 4.2,
+    bearing: 0,
+    pitch: 0,
+    padding: { top: 0, bottom: 0, left: 0, right: 0 },
   });
 
   useEffect(() => {
     const loadGeo = async () => {
-      const response = await fetch('/geo/uk-regions.geo.json');
+      const response = await fetch('/geo/indonesia-provinces.geo.json');
       if (!response.ok) {
-        throw new Error('Gagal memuat GeoJSON region UK');
+        throw new Error('Gagal memuat GeoJSON provinsi Indonesia');
       }
       const data = (await response.json()) as GeoJSON.FeatureCollection;
       setGeojson(data);
@@ -105,26 +146,41 @@ export const ChoroplethMap = ({
     [],
   );
 
+  const metricLookup = useMemo(() => {
+    const map = new globalThis.Map<string, { label: string; metric: Metric }>();
+    Object.entries(metricByRegion).forEach(([region, metric]) => {
+      map.set(normalizeRegionName(region), { label: region, metric });
+    });
+    return map;
+  }, [metricByRegion]);
+
   const enrichedGeojson = useMemo(() => {
     if (!geojson) return null;
     return {
       ...geojson,
       features: geojson.features.map((feature) => {
-        const regionName = feature.properties?.name ?? feature.properties?.NAME ?? 'Unknown';
-        const key = String(regionName);
-        const metric = metricByRegion[key] ?? { value: 0, average_score: 0 };
+        const rawName =
+          (feature.properties?.name as string) ??
+          (feature.properties?.NAME as string) ??
+          (feature.properties?.Propinsi as string) ??
+          (feature.properties?.PROPINSI as string) ??
+          'Unknown';
+        const normalized = normalizeRegionName(rawName);
+        const match = metricLookup.get(normalized);
+        const label = displayRegionName(rawName, match?.label);
+        const metric = match?.metric ?? { value: 0, average_score: 0 };
         return {
           ...feature,
           properties: {
             ...feature.properties,
             metricValue: metric.value,
             metricScore: metric.average_score,
-            regionName: key,
+            regionName: label,
           },
         };
       }),
     } as GeoJSON.FeatureCollection;
-  }, [geojson, metricByRegion]);
+  }, [geojson, metricLookup]);
 
   const handleDownload = async () => {
     if (!ref.current) return;

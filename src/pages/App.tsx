@@ -44,14 +44,14 @@ const AppShell = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[url('/noise.svg')] bg-cover bg-fixed bg-top text-slate-900 transition-colors dark:text-slate-100">
-      <div className="min-h-screen bg-gradient-to-br from-white/60 via-white/40 to-slate-200/30 pb-16 dark:from-slate-900/70 dark:via-slate-900/60 dark:to-slate-950/70">
+    <div className="min-h-screen bg-slate-100 bg-[url('/noise.svg')] bg-cover bg-fixed bg-top text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+      <div className="min-h-screen bg-gradient-to-br from-white/95 via-white/80 to-slate-200/60 pb-16 dark:from-slate-900/80 dark:via-slate-900/60 dark:to-slate-950/80">
         <header className="sticky top-0 z-40 backdrop-blur-xl">
           <motion.nav
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="mx-auto flex max-w-7xl items-center justify-between gap-6 rounded-b-3xl border border-white/30 bg-white/70 px-6 py-4 shadow-lg dark:border-white/10 dark:bg-slate-900/70"
+            className="mx-auto flex max-w-7xl items-center justify-between gap-6 rounded-b-3xl border border-slate-200/70 bg-white/90 px-6 py-4 shadow-lg shadow-slate-900/10 ring-1 ring-slate-900/5 dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/40 dark:ring-white/5"
           >
             <NavLink to="/" className="flex items-center gap-3 text-lg font-semibold">
               <Sparkles className="h-6 w-6 text-sky-500" />
@@ -64,7 +64,7 @@ const AppShell = () => {
                   `flex items-center gap-2 rounded-full px-3 py-2 transition ${
                     isActive
                       ? 'bg-sky-500/80 text-white shadow-lg'
-                      : 'text-slate-600 hover:bg-white/40 dark:text-slate-200 dark:hover:bg-white/10'
+                      : 'text-slate-600 hover:bg-slate-100/80 dark:text-slate-200 dark:hover:bg-white/10'
                   }`
                 }
               >
@@ -77,7 +77,7 @@ const AppShell = () => {
                   `flex items-center gap-2 rounded-full px-3 py-2 transition ${
                     isActive
                       ? 'bg-sky-500/80 text-white shadow-lg'
-                      : 'text-slate-600 hover:bg-white/40 dark:text-slate-200 dark:hover:bg-white/10'
+                      : 'text-slate-600 hover:bg-slate-100/80 dark:text-slate-200 dark:hover:bg-white/10'
                   }`
                 }
               >
@@ -90,7 +90,7 @@ const AppShell = () => {
                   `flex items-center gap-2 rounded-full px-3 py-2 transition ${
                     isActive
                       ? 'bg-sky-500/80 text-white shadow-lg'
-                      : 'text-slate-600 hover:bg-white/40 dark:text-slate-200 dark:hover:bg-white/10'
+                      : 'text-slate-600 hover:bg-slate-100/80 dark:text-slate-200 dark:hover:bg-white/10'
                   }`
                 }
               >
@@ -103,7 +103,7 @@ const AppShell = () => {
                   `flex items-center gap-2 rounded-full px-3 py-2 transition ${
                     isActive
                       ? 'bg-sky-500/80 text-white shadow-lg'
-                      : 'text-slate-600 hover:bg-white/40 dark:text-slate-200 dark:hover:bg-white/10'
+                      : 'text-slate-600 hover:bg-slate-100/80 dark:text-slate-200 dark:hover:bg-white/10'
                   }`
                 }
               >

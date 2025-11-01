@@ -1,8 +1,25 @@
 code_module,code_presentation,week,sum_clicks,students_count,avg_final_score
-AAA,2024J,-2,1450,520,62.4
-AAA,2024J,0,2230,520,63.1
-AAA,2024J,4,3120,518,65.3
-BBB,2024J,0,1890,480,58.9
-BBB,2024J,4,2560,478,60.4
-CCC,2024J,0,940,310,55.2
-CCC,2024J,8,1235,308,57.6
+"Analitik Pendidikan Digital","2024Ganjil",-1,168,6,56.5
+"Analitik Pendidikan Digital","2024Ganjil",0,570,6,56.5
+"Analitik Pendidikan Digital","2024Ganjil",2,623,6,56.5
+"Analitik Pendidikan Digital","2024Ganjil",4,682,6,56.5
+"Analitik Pendidikan Digital","2024Ganjil",6,560,5,56.5
+"Analitik Pendidikan Digital","2024Ganjil",8,557,5,56.5
+"Pemrograman Python Terapan","2024Genap",-1,184,6,60.3
+"Pemrograman Python Terapan","2024Genap",0,645,6,60.3
+"Pemrograman Python Terapan","2024Genap",2,670,6,60.3
+"Pemrograman Python Terapan","2024Genap",4,698,6,60.3
+"Pemrograman Python Terapan","2024Genap",6,680,6,60.3
+"Pemrograman Python Terapan","2024Genap",8,633,5,60.3
+Statistika Dasar,"2024Ganjil",-1,193,6,60.2
+Statistika Dasar,"2024Ganjil",0,615,6,60.2
+Statistika Dasar,"2024Ganjil",2,698,6,60.2
+Statistika Dasar,"2024Ganjil",4,757,6,60.2
+Statistika Dasar,"2024Ganjil",6,635,5,60.2
+Statistika Dasar,"2024Ganjil",8,502,5,60.2
+"Visualisasi Data Interaktif","2024Genap",-1,173,6,59.5
+"Visualisasi Data Interaktif","2024Genap",0,564,6,59.5
+"Visualisasi Data Interaktif","2024Genap",2,627,6,59.5
+"Visualisasi Data Interaktif","2024Genap",4,659,6,59.5
+"Visualisasi Data Interaktif","2024Genap",6,601,6,59.5
+"Visualisasi Data Interaktif","2024Genap",8,576,5,59.5

@@ -1,13 +1,17 @@
 code_module,code_presentation,band,students
-AAA,2024J,20,42
-AAA,2024J,40,118
-AAA,2024J,60,198
-AAA,2024J,80,94
-BBB,2024J,20,55
-BBB,2024J,40,126
-BBB,2024J,60,162
-BBB,2024J,80,62
-CCC,2024J,20,21
-CCC,2024J,40,88
-CCC,2024J,60,134
-CCC,2024J,80,54
+"Analitik Pendidikan Digital","2024Ganjil",0,1
+"Analitik Pendidikan Digital","2024Ganjil",20,1
+"Analitik Pendidikan Digital","2024Ganjil",60,2
+"Analitik Pendidikan Digital","2024Ganjil",80,2
+"Pemrograman Python Terapan","2024Genap",0,1
+"Pemrograman Python Terapan","2024Genap",20,1
+"Pemrograman Python Terapan","2024Genap",60,1
+"Pemrograman Python Terapan","2024Genap",80,3
+Statistika Dasar,"2024Ganjil",0,1
+Statistika Dasar,"2024Ganjil",20,1
+Statistika Dasar,"2024Ganjil",60,2
+Statistika Dasar,"2024Ganjil",80,2
+"Visualisasi Data Interaktif","2024Genap",0,1
+"Visualisasi Data Interaktif","2024Genap",20,1
+"Visualisasi Data Interaktif","2024Genap",60,2
+"Visualisasi Data Interaktif","2024Genap",80,2

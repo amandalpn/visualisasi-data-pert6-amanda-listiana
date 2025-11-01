@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Save, Columns } from 'lucide-react';
 import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender, createColumnHelper, type SortingState } from '@tanstack/react-table';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { saveAs } from 'file-saver';
 import { useOuladData } from '@/lib/dataContext';
 import { useAppStore } from '@/lib/store';
@@ -144,12 +143,6 @@ const ModulesPage = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  const rowVirtualizer = useVirtualizer({
-    count: table.getRowModel().rows.length,
-    estimateSize: () => 56,
-    getScrollElement: () => document.getElementById('module-table-scroll-container'),
-  });
-
   const exportCsv = () => {
     const header = columns
       .map((col) => col.id ?? col.accessorKey)
@@ -250,19 +243,13 @@ const ModulesPage = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div
-              id="module-table-scroll-container"
-              className="max-h-[480px] overflow-auto rounded-2xl border border-white/30"
-            >
-              <table className="min-w-full border-collapse text-sm text-slate-700 dark:text-slate-200">
-                <thead className="sticky top-0 bg-white/70 backdrop-blur-xl dark:bg-slate-900/80">
+            <div className="max-h-[480px] overflow-auto rounded-3xl border border-slate-200/70 bg-white/60 p-2 dark:border-slate-700/60 dark:bg-white/5">
+              <table className="min-w-full border-separate border-spacing-x-0 border-spacing-y-2 text-sm text-slate-700 dark:text-slate-200">
+                <thead className="sticky top-0 z-10 rounded-2xl bg-white/95 text-xs font-semibold uppercase tracking-wide text-slate-500 backdrop-blur-xl dark:bg-slate-900/90 dark:text-slate-300">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
-                        <th
-                          key={header.id}
-                          className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide"
-                        >
+                        <th key={header.id} className="px-4 py-3 text-left">
                           {header.isPlaceholder
                             ? null
                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -271,23 +258,19 @@ const ModulesPage = () => {
                     </tr>
                   ))}
                 </thead>
-                <tbody style={{ height: `${rowVirtualizer.getTotalSize()}px`, position: 'relative' }}>
-                  {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                    const row = table.getRowModel().rows[virtualRow.index];
-                    return (
-                      <tr
-                        key={row.id}
-                        className="absolute inset-x-0"
-                        style={{ transform: `translateY(${virtualRow.start}px)` }}
-                      >
-                        {row.getVisibleCells().map((cell) => (
-                          <td key={cell.id} className="px-4 py-3">
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </td>
-                        ))}
-                      </tr>
-                    );
-                  })}
+                <tbody>
+                  {table.getRowModel().rows.map((row) => (
+                    <tr key={row.id} className="group">
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="bg-white/90 px-4 py-3 align-middle text-sm text-slate-700 transition first:rounded-l-2xl last:rounded-r-2xl group-hover:bg-sky-50/80 dark:bg-white/10 dark:text-slate-200 dark:group-hover:bg-slate-800/60"
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -357,3 +340,4 @@ const DetailRow = ({ label, value }: { label: string; value: string }) => (
 );
 
 export default ModulesPage;
+

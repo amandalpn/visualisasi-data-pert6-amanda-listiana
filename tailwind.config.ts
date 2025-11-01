@@ -21,7 +21,7 @@ const config: Config = {
           'radial-gradient(circle at top left, rgba(14, 165, 233, 0.25), transparent 45%), radial-gradient(circle at bottom right, rgba(244, 63, 94, 0.15), transparent 55%), radial-gradient(circle at top right, rgba(139, 92, 246, 0.15), transparent 65%)',
       },
       boxShadow: {
-        glass: '0 20px 50px rgba(15, 23, 42, 0.25)',
+        glass: '0 24px 45px rgba(15, 23, 42, 0.14)',
       },
     },
   },

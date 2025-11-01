@@ -17,11 +17,11 @@ const variantStyles: Record<ButtonVariant, string> = {
   primary:
     'bg-sky-500/80 text-white shadow-glass hover:bg-sky-500/95 dark:bg-sky-500/70 dark:hover:bg-sky-400/80',
   secondary:
-    'bg-white/10 text-slate-900 backdrop-blur-xl hover:bg-white/20 border border-white/30 dark:text-slate-100 dark:bg-white/5 dark:hover:bg-white/10',
+    'border border-slate-200/70 bg-white/80 text-slate-800 shadow-sm hover:bg-white/90 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:hover:bg-white/10',
   ghost:
-    'bg-transparent text-slate-700 hover:bg-white/10 dark:text-slate-200 dark:hover:bg-white/10',
+    'bg-transparent text-slate-700 hover:bg-slate-100/70 dark:text-slate-200 dark:hover:bg-white/10',
   outline:
-    'border border-white/40 bg-transparent text-slate-700 hover:bg-white/10 dark:text-slate-200 dark:border-white/20',
+    'border border-slate-200/70 bg-transparent text-slate-700 hover:bg-slate-100/70 dark:text-slate-200 dark:border-white/20 dark:hover:bg-white/10',
 };
 
 const sizeStyles = {
