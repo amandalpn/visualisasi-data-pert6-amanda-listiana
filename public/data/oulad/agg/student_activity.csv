@@ -1,0 +1,7 @@
+id_student,code_module,code_presentation,outcome,total_clicks,final_score,gender,region,age_band,highest_education,disability,weeks
+100001,AAA,2024J,Pass,580,76,F,London,0-35,HE Qualification,No,"[{""week"":-2,""clicks"":32},{""week"":0,""clicks"":68},{""week"":4,""clicks"":75},{""week"":8,""clicks"":54}]"
+100002,AAA,2024J,Pass,420,68,M,East Midlands,35-55,A Level or Equivalent,No,"[{""week"":-2,""clicks"":22},{""week"":0,""clicks"":54},{""week"":4,""clicks"":60},{""week"":8,""clicks"":49}]"
+100003,BBB,2024J,Fail,210,38,F,Scotland,0-35,HE Qualification,No,"[{""week"":0,""clicks"":18},{""week"":4,""clicks"":26},{""week"":8,""clicks"":32}]"
+100004,BBB,2024J,Pass,360,58,M,Wales,35-55,HE Qualification,No,"[{""week"":0,""clicks"":40},{""week"":4,""clicks"":62},{""week"":8,""clicks"":55}]"
+100005,CCC,2024J,Withdrawn,120,24,F,South East,0-35,No Formal quals,Yes,"[{""week"":0,""clicks"":15},{""week"":4,""clicks"":10},{""week"":8,""clicks"":8}]"
+100006,CCC,2024J,Pass,310,64,M,London,0-35,HE Qualification,No,"[{""week"":0,""clicks"":32},{""week"":4,""clicks"":48},{""week"":8,""clicks"":52}]"

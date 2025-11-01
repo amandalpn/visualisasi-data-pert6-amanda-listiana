@@ -1,0 +1,17 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="20" y1="18" x2="108" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0.1" stop-color="#38bdf8" stop-opacity="0.9"/>
+      <stop offset="0.6" stop-color="#ec4899" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0.85"/>
+    </linearGradient>
+    <filter id="glass" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="blur" in2="SourceGraphic" operator="atop"/>
+    </filter>
+  </defs>
+  <rect x="10" y="10" width="108" height="108" rx="32" fill="url(#grad)" opacity="0.85"/>
+  <rect x="24" y="24" width="80" height="80" rx="24" fill="white" opacity="0.35" filter="url(#glass)"/>
+  <path d="M64 40C52.954 40 44 48.954 44 60C44 71.046 52.954 80 64 80C75.046 80 84 71.046 84 60" stroke="#0ea5e9" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="87" cy="44" r="9" fill="#ec4899" opacity="0.85"/>
+</svg>

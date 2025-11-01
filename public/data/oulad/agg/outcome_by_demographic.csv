@@ -1,0 +1,10 @@
+demographic,category,pass,fail,withdrawn,distinction
+gender,M,620,140,32,64
+gender,F,680,120,24,72
+region,East Midlands,220,48,12,28
+region,London,310,66,18,36
+region,Scotland,180,44,10,22
+age_band,0-35,780,168,42,68
+age_band,35-55,420,72,14,32
+highest_education,HE Qualification,640,88,18,54
+highest_education,No Formal quals,180,102,28,18
