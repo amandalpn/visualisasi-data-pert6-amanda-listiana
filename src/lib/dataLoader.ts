@@ -10,13 +10,13 @@ import type {
 
 const cache = new Map<string, Promise<unknown>>();
 
-const fetchBinary = async (path: string) => {
-  const response = await fetch(path);
-  if (!response.ok) {
-    throw new Error(`Gagal memuat ${path}: ${response.statusText}`);
-  }
-  return new Uint8Array(await response.arrayBuffer());
-};
+// const fetchBinary = async (path: string) => {
+//   const response = await fetch(path);
+//   if (!response.ok) {
+//     throw new Error(`Gagal memuat ${path}: ${response.statusText}`);
+//   }
+//   return new Uint8Array(await response.arrayBuffer());
+// };
 
 const fetchText = async (path: string) => {
   const response = await fetch(path);
