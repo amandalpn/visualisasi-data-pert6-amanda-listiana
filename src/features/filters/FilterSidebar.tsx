@@ -1,13 +1,16 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Filter, RotateCcw, SlidersHorizontal, X, ChevronLeft, ChevronRight } from 'lucide-react';
+
 import { useOuladData } from '@/lib/dataContext';
 import { useAppStore } from '@/lib/store';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 
-const buildOptions = (values: string[]) =>
+// Utils
+export type Option = { label: string; value: string };
+const buildOptions = (values: string[]): Option[] =>
   Array.from(new Set(values))
     .filter(Boolean)
     .sort((a, b) => a.localeCompare(b))
@@ -39,13 +42,13 @@ function FilterBody() {
   const options = useMemo(() => {
     if (!data) {
       return {
-        modules: [],
-        presentations: [],
-        regions: [],
-        ageBands: [],
-        educationLevels: [],
-        genders: [],
-        disabilities: [],
+        modules: [] as Option[],
+        presentations: [] as Option[],
+        regions: [] as Option[],
+        ageBands: [] as Option[],
+        educationLevels: [] as Option[],
+        genders: [] as Option[],
+        disabilities: [] as Option[],
       };
     }
     return {
@@ -85,6 +88,8 @@ function FilterBody() {
             size="sm"
             onClick={resetFilters}
             className="rounded-lg"
+            title="Reset filter"
+            aria-label="Reset filter"
           >
             <RotateCcw className="h-4 w-4" /> Reset
           </Button>
@@ -163,6 +168,7 @@ function FilterBody() {
                 setFilter('weekRange', [Number(e.target.value), filters.weekRange[1]])
               }
               className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-sky-500"
+              aria-label="Minggu awal"
             />
             <input
               type="range"
@@ -173,6 +179,7 @@ function FilterBody() {
                 setFilter('weekRange', [filters.weekRange[0], Number(e.target.value)])
               }
               className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-sky-500"
+              aria-label="Minggu akhir"
             />
           </div>
           <p className="mt-3 text-xs text-slate-500 dark:text-slate-300">
@@ -187,26 +194,31 @@ function FilterBody() {
 export function FilterSidebar({ className = '' }: { className?: string }) {
   // collapsed state: simpan di localStorage + atur CSS var lebar sidebar
   const [collapsed, setCollapsed] = useState<boolean>(() => {
-    return localStorage.getItem('filters.sidebarCollapsed') === '1';
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem('filters.sidebarCollapsed') === '1';
   });
 
   const resetFilters = useAppStore((s) => s.resetFilters);
   const activeFilters = useActiveFiltersCount();
 
   useEffect(() => {
-    localStorage.setItem('filters.sidebarCollapsed', collapsed ? '1' : '0');
-    // lebar dinamis untuk grid di halaman: 64px saat collapse, 320px saat normal
-    document.documentElement.style.setProperty('--fsb-w', collapsed ? '64px' : '320px');
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty('--fsb-w', collapsed ? '64px' : '320px');
+      window.localStorage.setItem('filters.sidebarCollapsed', collapsed ? '1' : '0');
+    }
   }, [collapsed]);
 
-  // set nilai awal kalau belum ada
+  // Set nilai awal jika belum ada
   useEffect(() => {
-    if (!localStorage.getItem('filters.sidebarCollapsed')) {
-      document.documentElement.style.setProperty('--fsb-w', '320px');
-    } else {
-      document.documentElement.style.setProperty('--fsb-w', collapsed ? '64px' : '320px');
+    if (typeof document !== 'undefined') {
+      const stored = window.localStorage.getItem('filters.sidebarCollapsed');
+      if (!stored) {
+        document.documentElement.style.setProperty('--fsb-w', '320px');
+      } else {
+        document.documentElement.style.setProperty('--fsb-w', stored === '1' ? '64px' : '320px');
+      }
     }
-  }, []); // eslint-disable-line
+  }, []);
 
   return (
     <aside className={`sticky top-24 h-fit ${className}`} aria-expanded={!collapsed}>
@@ -217,6 +229,7 @@ export function FilterSidebar({ className = '' }: { className?: string }) {
           onClick={() => setCollapsed((v) => !v)}
           className="absolute -right-3 top-4 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-white/80 text-slate-600 shadow dark:border-white/10 dark:bg-slate-800/80 dark:text-slate-200"
           title={collapsed ? 'Tampilkan filter' : 'Sembunyikan filter'}
+          aria-label={collapsed ? 'Tampilkan filter' : 'Sembunyikan filter'}
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </button>
@@ -241,6 +254,7 @@ export function FilterSidebar({ className = '' }: { className?: string }) {
                 size="icon"
                 className="rounded-xl"
                 title="Reset filter"
+                aria-label="Reset filter"
                 onClick={resetFilters}
               >
                 <RotateCcw className="h-4 w-4" />
@@ -265,6 +279,12 @@ export function FilterDrawer({ open, onClose }: { open: boolean; onClose: () => 
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') onClose();
+          }}
+          tabIndex={-1}
+          aria-modal="true"
+          role="dialog"
         >
           <motion.div
             initial={{ x: '100%' }}
@@ -281,6 +301,8 @@ export function FilterDrawer({ open, onClose }: { open: boolean; onClose: () => 
               <button
                 onClick={onClose}
                 className="rounded-xl border px-2 py-1 text-slate-600 dark:border-white/10 dark:text-slate-200"
+                title="Tutup drawer"
+                aria-label="Tutup drawer"
               >
                 <X className="h-4 w-4" />
               </button>

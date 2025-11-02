@@ -126,7 +126,8 @@ const StudentsPage = () => {
   const currentRows = table.getRowModel().rows.length;
   const startRow = totalRows === 0 ? 0 : pagination.pageIndex * pageSizeValue + 1;
   const endRow = totalRows === 0 ? 0 : startRow + currentRows - 1;
-  const pageSizeLabel = pagination.pageSize === ALL_PAGE_SIZE ? 'Semua' : String(pagination.pageSize);
+  const pageSizeLabel =
+    pagination.pageSize === ALL_PAGE_SIZE ? 'Semua' : String(pagination.pageSize);
   const pageSizeOptions = [10, 20, 30, 50];
 
   if (loading || !data) {
@@ -162,10 +163,12 @@ const StudentsPage = () => {
         </div>
 
         {/* 2 kolom: sidebar kiri (desktop) + konten kanan */}
-        <div className="grid gap-6 lg:grid-cols-[var(--fsb-w,320px),1fr]">
+        <div className="grid gap-6 lg:grid-cols-[var(--fsb-w,320px),minmax(0,1fr)]">
           <FilterSidebar className="hidden lg:block" />
 
-          <div className="space-y-6">
+          <div className="space-y-6 min-w-0">
+            {' '}
+            {/* penting: biar bisa menyusut */}
             <Card className="bg-white/60 dark:bg-slate-900/80">
               <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
@@ -180,130 +183,132 @@ const StudentsPage = () => {
                   Ekspor CSV
                 </Button>
               </CardHeader>
-          <CardContent>
-            <div className="mb-4 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-slate-600 dark:text-slate-300">Tampilkan</span>
-                <Dropdown
-                  align="start"
-                  trigger={
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-xl transition hover:border-sky-300 hover:bg-white/20 dark:border-white/15 dark:bg-white/10 dark:text-slate-100"
-                    >
-                      {pageSizeLabel}
-                      <ChevronDown className="h-4 w-4 opacity-70" />
-                    </button>
-                  }
-                  items={[
-                    ...pageSizeOptions.map((size) => ({
-                      id: String(size),
-                      label: (
-                        <span className="flex items-center gap-2">
-                          {size}
-                          {pagination.pageSize === size && (
-                            <Check className="h-4 w-4 text-sky-500" />
-                          )}
-                        </span>
-                      ),
-                      onSelect: () =>
-                        setPagination({
-                          pageIndex: 0,
-                          pageSize: size,
-                        }),
-                    })),
-                    {
-                      id: 'all',
-                      label: (
-                        <span className="flex items-center gap-2">
-                          Semua
-                          {pagination.pageSize === ALL_PAGE_SIZE && (
-                            <Check className="h-4 w-4 text-sky-500" />
-                          )}
-                        </span>
-                      ),
-                      onSelect: () =>
-                        setPagination({
-                          pageIndex: 0,
-                          pageSize: ALL_PAGE_SIZE,
-                        }),
-                    },
-                  ]}
-                />
-                <span className="text-slate-500 dark:text-slate-400">baris</span>
-              </div>
-              <div className="flex flex-col gap-2 text-slate-600 dark:text-slate-300 md:flex-row md:items-center md:gap-4">
-                <span>
-                  {totalRows === 0
-                    ? 'Tidak ada data'
-                    : `Menampilkan ${startRow}-${endRow} dari ${totalRows} mahasiswa`}
-                </span>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="rounded-lg"
-                  >
-                    Prev
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="rounded-lg"
-                  >
-                    Next
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setPagination({
-                        pageIndex: 0,
-                        pageSize: ALL_PAGE_SIZE,
-                      })
-                    }
-                    disabled={pagination.pageSize === ALL_PAGE_SIZE}
-                    className="rounded-lg"
-                  >
-                    All
-                  </Button>
+              <CardContent className="min-w-0">
+                <div className="mb-4 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-600 dark:text-slate-300">Tampilkan</span>
+                    <Dropdown
+                      align="start"
+                      trigger={
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-xl transition hover:border-sky-300 hover:bg-white/20 dark:border-white/15 dark:bg-white/10 dark:text-slate-100"
+                        >
+                          {pageSizeLabel}
+                          <ChevronDown className="h-4 w-4 opacity-70" />
+                        </button>
+                      }
+                      items={[
+                        ...pageSizeOptions.map((size) => ({
+                          id: String(size),
+                          label: (
+                            <span className="flex items-center gap-2">
+                              {size}
+                              {pagination.pageSize === size && (
+                                <Check className="h-4 w-4 text-sky-500" />
+                              )}
+                            </span>
+                          ),
+                          onSelect: () =>
+                            setPagination({
+                              pageIndex: 0,
+                              pageSize: size,
+                            }),
+                        })),
+                        {
+                          id: 'all',
+                          label: (
+                            <span className="flex items-center gap-2">
+                              Semua
+                              {pagination.pageSize === ALL_PAGE_SIZE && (
+                                <Check className="h-4 w-4 text-sky-500" />
+                              )}
+                            </span>
+                          ),
+                          onSelect: () =>
+                            setPagination({
+                              pageIndex: 0,
+                              pageSize: ALL_PAGE_SIZE,
+                            }),
+                        },
+                      ]}
+                    />
+                    <span className="text-slate-500 dark:text-slate-400">baris</span>
+                  </div>
+                  <div className="flex flex-col gap-2 text-slate-600 dark:text-slate-300 md:flex-row md:items-center md:gap-4">
+                    <span>
+                      {totalRows === 0
+                        ? 'Tidak ada data'
+                        : `Menampilkan ${startRow}-${endRow} dari ${totalRows} mahasiswa`}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="rounded-lg"
+                      >
+                        Prev
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="rounded-lg"
+                      >
+                        Next
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setPagination({
+                            pageIndex: 0,
+                            pageSize: ALL_PAGE_SIZE,
+                          })
+                        }
+                        disabled={pagination.pageSize === ALL_PAGE_SIZE}
+                        className="rounded-lg"
+                      >
+                        All
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="max-h-[600px] overflow-auto rounded-3xl border border-slate-200/70 bg-white/60 p-2 dark:border-slate-700/60 dark:bg-white/5">
-              <table className="min-w-full border-separate border-spacing-x-0 border-spacing-y-2 text-sm text-slate-700 dark:text-slate-200">
-                    <thead className="sticky top-0 z-10 rounded-2xl bg-white/95 text-xs font-semibold uppercase tracking-wide text-slate-500 backdrop-blur-xl dark:bg-slate-900/90 dark:text-slate-300">
-                      {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id}>
-                          {headerGroup.headers.map((header) => (
-                            <th key={header.id} className="px-4 py-3 text-left">
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(header.column.columnDef.header, header.getContext())}
-                            </th>
-                          ))}
-                        </tr>
-                      ))}
-                    </thead>
-                    <tbody>
-                      {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id} className="group">
-                          {row.getVisibleCells().map((cell) => (
-                            <td
-                              key={cell.id}
-                              className="bg-white/90 px-4 py-3 align-top text-sm text-slate-700 transition first:rounded-l-2xl last:rounded-r-2xl group-hover:bg-sky-50/80 dark:bg-white/10 dark:text-slate-200 dark:group-hover:bg-slate-800/60"
-                            >
-                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="max-h-[600px] overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 p-2 dark:border-slate-700/60 dark:bg-white/5">
+                  <div className="max-h-[560px] overflow-auto rounded-3xl border border-slate-200/70 bg-white/60 p-2 dark:border-slate-700/60 dark:bg-white/5">
+                    <table className="min-w-full border-separate border-spacing-x-0 border-spacing-y-2 text-sm text-slate-700 dark:text-slate-200">
+                      <thead className="sticky top-0 z-10 rounded-2xl bg-white/95 text-xs font-semibold uppercase tracking-wide text-slate-500 backdrop-blur-xl dark:bg-slate-900/90 dark:text-slate-300">
+                        {table.getHeaderGroups().map((headerGroup) => (
+                          <tr key={headerGroup.id}>
+                            {headerGroup.headers.map((header) => (
+                              <th key={header.id} className="px-4 py-3 text-left">
+                                {header.isPlaceholder
+                                  ? null
+                                  : flexRender(header.column.columnDef.header, header.getContext())}
+                              </th>
+                            ))}
+                          </tr>
+                        ))}
+                      </thead>
+                      <tbody>
+                        {table.getRowModel().rows.map((row) => (
+                          <tr key={row.id} className="group">
+                            {row.getVisibleCells().map((cell) => (
+                              <td
+                                key={cell.id}
+                                className="bg-white/90 px-4 py-3 align-top text-sm text-slate-700 transition first:rounded-l-2xl last:rounded-r-2xl group-hover:bg-sky-50/80 dark:bg-white/10 dark:text-slate-200 dark:group-hover:bg-slate-800/60"
+                              >
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -331,7 +336,7 @@ const Sparkline = ({ weeks }: { weeks: Array<{ week: number; clicks: number }> }
     .join(' ');
 
   return (
-    <svg viewBox="0 0 100 100" className="h-12 w-32 overflow-visible">
+    <svg viewBox="0 0 100 100" className="h-12 w-[120px] md:w-32 overflow-visible">
       <polyline
         points={points}
         fill="none"

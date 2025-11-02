@@ -13,7 +13,6 @@ import {
   buildRegionInsight,
   filterActivities,
 } from '@/lib/analytics';
-
 import {
   aggregateModuleOutcomeFromStudents,
   aggregateActivityByWeekFromStudents,
@@ -29,16 +28,31 @@ import { PieChartX } from '@/components/charts/PieChartX';
 import { HistogramX } from '@/components/charts/HistogramX';
 import { ChoroplethMap } from '@/components/map/ChoroplethMap';
 import { formatNumber } from '@/lib/format';
-// â¬‡ï¸ Sidebar & Drawer filter
 import { FilterSidebar, FilterDrawer } from '@/features/filters/FilterSidebar';
+
 
 const DashboardPage = () => {
   const { data, loading, error } = useOuladData();
   const navigate = useNavigate();
   const filters = useAppStore((state) => state.filters);
   const setSelection = useAppStore((state) => state.setSelection);
+  const [openFilter, setOpenFilter] = useState(false);
 
-  const [openFilter, setOpenFilter] = useState(false); // drawer untuk mobile
+  // ✅ Formatter label sumbu-X untuk memendekkan nama modul panjang
+  // Contoh: "Pemrograman Python Terapan-2024Genap" -> "PPT-2024Genap"
+  const shortModuleLabel = (raw: string) => {
+    if (!raw) return '';
+    const [name, term] = raw.split('-');
+    const words = name.trim().split(/\s+/);
+    const abbreviated =
+      words.length >= 2 || name.length > 18
+        ? words
+            .map((w) => w[0])
+            .join('')
+            .toUpperCase()
+        : name;
+    return term ? `${abbreviated}-${term}` : abbreviated;
+  };
 
   const memoized = useMemo(() => {
     if (!data) {
@@ -57,17 +71,14 @@ const DashboardPage = () => {
       };
     }
 
-    // 1) Ambil subset mahasiswa yang sudah kena SEMUA filter (termasuk week range)
     const activeStudents = filterActivities(data.studentActivity, filters, filters.weekRange);
 
-    // 2) Turunkan semua agregat dari activeStudents
     const filteredModuleOutcome = aggregateModuleOutcomeFromStudents(activeStudents);
     const filteredActivity = aggregateActivityByWeekFromStudents(activeStudents);
     const filteredGradeDistribution = aggregateGradeDistributionFromStudents(activeStudents);
     const filteredRegion = aggregateRegionFromStudents(activeStudents);
     const filteredOutcomeByDemo = aggregateOutcomeByDemographicFromStudents(activeStudents);
 
-    // 3) Bentuk data untuk komponen chart
     const moduleOutcomeData = filteredModuleOutcome.map((row) => {
       const total = row.pass + row.fail + row.withdrawn + row.distinction;
       const code = `${row.code_module}-${row.code_presentation}`;
@@ -106,7 +117,6 @@ const DashboardPage = () => {
       {},
     );
 
-    // 4) KPI ikut data aktif (bukan seluruh dataset)
     const kpis = computeKpis({
       students: activeStudents,
       activity: filteredActivity,
@@ -135,10 +145,7 @@ const DashboardPage = () => {
       demographicData,
       histogramData,
       mapData,
-      totals: {
-        students: totalStudents,
-        modules: totalModules,
-      },
+      totals: { students: totalStudents, modules: totalModules },
       baseline: baselineKpis,
     };
   }, [data, filters]);
@@ -224,6 +231,58 @@ const DashboardPage = () => {
           : 0,
     },
   ];
+  const KpiCard = ({
+    title,
+    value,
+    description,
+    icon: Icon,
+    progress = 0,
+  }: {
+    title: string;
+    value: string | number;
+    description: string;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    progress?: number;
+  }) => {
+    const pct = Math.min(Math.max(progress ?? 0, 0), 1) * 100;
+
+    return (
+      <Card className="relative h-full overflow-hidden bg-white/50 dark:bg-slate-900/80">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent dark:from-white/5" />
+        <div className="relative grid h-full grid-rows-[auto,auto,1fr,auto] gap-2 p-5">
+          {/* Header */}
+          <div className="flex items-center gap-3 text-sky-500">
+            <Icon className="h-6 w-6" />
+            <CardTitle className="text-base">{title}</CardTitle>
+          </div>
+
+          {/* Angka utama */}
+          <div className="text-3xl font-semibold leading-none text-slate-900 dark:text-white tabular-nums min-h-[2.25rem]">
+            {value}
+          </div>
+
+          {/* Deskripsi (mengisi ruang tengah agar progress selalu di bawah) */}
+          <CardDescription className="mt-1 text-left text-sm text-slate-600 dark:text-slate-300">
+            {description}
+          </CardDescription>
+
+          {/* Progress */}
+          <div className="mt-2">
+            <div className="mb-1 flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-300">
+              <span className="opacity-60">0%</span>
+              <span>{Math.round(pct)}%</span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full bg-slate-200/60 dark:bg-slate-700/60">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-sky-500 via-purple-500 to-fuchsia-500 transition-[width] duration-300"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  };
 
   return (
     <main className="mx-auto max-w-7xl space-y-8 px-4 py-8">
@@ -257,47 +316,19 @@ const DashboardPage = () => {
 
         {/* Layout 2 kolom: sidebar (desktop) + konten */}
         <div className="grid gap-6 lg:grid-cols-[var(--fsb-w,320px),1fr]">
-          {/* Sidebar hanya di desktop */}
           <FilterSidebar className="hidden lg:block" />
 
-          {/* Konten utama */}
           <div className="space-y-8">
             <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
               {kpiItems.map((item) => (
-                <Card
+                <KpiCard
                   key={item.title}
-                  className="relative overflow-hidden bg-white/50 dark:bg-slate-900/80"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent dark:from-white/5" />
-                  <CardHeader className="relative flex flex-col gap-3">
-                    <div className="flex items-center gap-3 text-sky-500">
-                      <item.icon className="h-6 w-6" />
-                      <CardTitle className="text-base">{item.title}</CardTitle>
-                    </div>
-                    <CardContent className="px-0 pb-0">
-                      <p className="text-3xl font-semibold text-slate-900 dark:text-white">
-                        {item.value}
-                      </p>
-                      <CardDescription className="mt-2 text-sm text-slate-600 dark:text-slate-300 text-left">
-                        {item.description}
-                      </CardDescription>
-                      <div className="mt-4">
-                        <div className="flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-300">
-                          {/* <span>Progress</span> */}
-                          <span>{Math.round((item.progress ?? 0) * 100)}%</span>
-                        </div>
-                        <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200/60 dark:bg-slate-700/60">
-                          <div
-                            className="h-full rounded-full bg-gradient-to-r from-sky-500 via-purple-500 to-fuchsia-500 transition-all duration-300"
-                            style={{
-                              width: `${Math.min(Math.max(item.progress ?? 0, 0), 1) * 100}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </CardHeader>
-                </Card>
+                  title={item.title}
+                  value={item.value}
+                  description={item.description}
+                  icon={item.icon}
+                  progress={item.progress}
+                />
               ))}
             </section>
 
@@ -307,12 +338,16 @@ const DashboardPage = () => {
                 description="Bandingkan tingkat kelulusan antar modul dan klik untuk membuka detail modul."
                 data={moduleOutcomeData}
                 insight={craftModuleInsight(filteredModuleOutcome)}
-                onBarClick={(key) => {
-                  const [code_module, code_presentation] = key.split('-');
-                  setSelection({ moduleForDrilldown: { code_module, code_presentation } });
-                  navigate(`/modules/${key}`);
-                }}
+                isClickable={false}
+                formatCategoryLabel={shortModuleLabel}
+                xTickFontSize={10}
+                xTickAngle={-12}
+                xTickDx={16} // ⬅️ geser label lebih ke kanan
+                xTickDy={4}
+                leftMargin={32} // ⬅️ tambah ruang kiri (di luar plot)
+                leftPadding={46} // ⬅️ tambah padding kiri (di sumbu X)
               />
+
               <LineChartX
                 title="Tren Klik Mingguan"
                 description="Pantau dinamika aktivitas belajar mahasiswa di lingkungan VLE."
@@ -337,7 +372,6 @@ const DashboardPage = () => {
                 data={demographicData}
                 insight={craftDemographicInsight(filteredOutcomeByDemo)}
               />
-
               <HistogramX
                 title="Distribusi Skor Akhir"
                 description="Sebaran skor akhir mahasiswa yang memenuhi filter."
@@ -363,7 +397,6 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Drawer filter untuk mobile */}
         <FilterDrawer open={openFilter} onClose={() => setOpenFilter(false)} />
       </motion.div>
     </main>

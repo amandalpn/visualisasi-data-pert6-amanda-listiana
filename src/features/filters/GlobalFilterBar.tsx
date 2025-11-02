@@ -173,8 +173,8 @@ export const GlobalFilterBar = () => {
             />
           </div>
           <p className="mt-3 text-xs text-slate-500 dark:text-slate-300">
-            Geser titik biru untuk menyesuaikan periode analisis. Grafik akan beradaptasi secara real
-            time.
+            Geser titik biru untuk menyesuaikan periode analisis. Grafik akan beradaptasi secara
+            real time.
           </p>
         </div>
       </CardContent>
