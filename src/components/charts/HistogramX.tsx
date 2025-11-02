@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+﻿import { useId, useMemo, useRef } from 'react';
 import { bin } from 'd3-array';
 import {
   Bar,
@@ -46,6 +46,8 @@ export const HistogramX = ({
   className,
 }: HistogramXProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
+  const gradientId = useId().replace(/:/g, '-');
+
   const histogramData = useMemo(() => {
     const values = data.map((item) => item.value);
     if (values.length === 0) return [];
@@ -80,29 +82,71 @@ export const HistogramX = ({
         </Button>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4">
-        <div ref={ref} className="h-full w-full rounded-2xl bg-white/20 p-4 dark:bg-white/5">
-          <ResponsiveContainer width="100%" height={height}>
-            <BarChart data={histogramData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.4)" />
-              <XAxis
-                dataKey="key"
-                angle={-25}
-                textAnchor="end"
-                height={60}
-                tick={{ fill: '#334155' }}
-              />
-              <YAxis tick={{ fill: '#334155' }} />
-              <RechartsTooltip
-                contentStyle={{
-                  borderRadius: 16,
-                  backgroundColor: 'rgba(15, 23, 42, 0.85)',
-                  border: '1px solid rgba(148, 163, 184, 0.3)',
-                  color: 'white',
-                }}
-              />
-              <Bar dataKey="count" fill="rgba(56,189,248,0.85)" radius={[12, 12, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+        <div
+          ref={ref}
+          className="relative h-full w-full overflow-hidden rounded-[28px] p-5 backdrop-blur-2xl"
+          style={{
+            background: 'var(--chart-surface-bg)',
+            border: '1px solid var(--chart-surface-border)',
+            boxShadow: 'var(--chart-surface-shadow)',
+          }}
+        >
+          <div
+            className="pointer-events-none absolute inset-0 opacity-70"
+            style={{ background: 'var(--chart-surface-overlay)' }}
+          />
+          <div className="relative z-10 h-full w-full">
+            <ResponsiveContainer width="100%" height={height}>
+              <BarChart data={histogramData} barSize={24}>
+                <CartesianGrid
+                  strokeDasharray="4 6"
+                  stroke="var(--chart-grid-color)"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="key"
+                  angle={-20}
+                  textAnchor="end"
+                  height={50}
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: 'var(--chart-axis-color)', fontSize: 12 }}
+                />
+                <YAxis
+                  tick={{ fill: 'var(--chart-axis-color)' }}
+                  tickLine={false}
+                  axisLine={false}
+                  width={40}
+                />
+                <RechartsTooltip
+                  cursor={{ fill: 'rgba(236,72,153,0.08)' }}
+                  contentStyle={{
+                    borderRadius: 18,
+                    backgroundColor: 'var(--chart-tooltip-bg)',
+                    border: '1px solid var(--chart-tooltip-border)',
+                    color: 'var(--chart-tooltip-color)',
+                    boxShadow: '0 18px 42px rgba(236, 72, 153, 0.18)',
+                    backdropFilter: 'blur(12px)',
+                  }}
+                  labelStyle={{ color: 'var(--chart-tooltip-color)', fontWeight: 600 }}
+                  itemStyle={{ color: 'var(--chart-tooltip-color)', fontWeight: 500 }}
+                />
+                <Bar
+                  dataKey="count"
+                  fill={`url(#${gradientId}-hist)`}
+                  radius={[12, 12, 10, 10]}
+                  stroke="rgba(255,255,255,0.45)"
+                  strokeWidth={0.8}
+                />
+                <defs>
+                  <linearGradient id={`${gradientId}-hist`} x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor="var(--chart-series-2)" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="var(--chart-series-3)" stopOpacity="0.85" />
+                  </linearGradient>
+                </defs>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
       {insight && (

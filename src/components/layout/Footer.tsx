@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import {
   Sparkles,
   Github,
@@ -30,8 +30,6 @@ const SOCIAL_LINKS = [
 ];
 
 export const Footer = () => {
-  const year = new Date().getFullYear();
-
   return (
     <footer className="mt-16 border-t border-slate-200/70 bg-white/80 pb-8 pt-12 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/85">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 text-sm text-slate-600 dark:text-slate-300">
@@ -43,7 +41,7 @@ export const Footer = () => {
               </span>
               <div>
                 <p className="text-lg font-semibold text-slate-800 dark:text-white">
-                  Visualisasi Data - Amanda Listiana
+                  Visualisasi Analitik Pembelajaran
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   Dashboard analitik pembelajaran berbasis dataset OULAD dengan fokus mahasiswa
@@ -129,9 +127,19 @@ export const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2 border-t border-white/60 pt-6 text-xs text-slate-500 dark:border-white/10 dark:text-slate-400 md:flex-row md:items-center md:justify-between">
-          <span>&copy; {year} Amanda Listiana • Seluruh hak cipta dilindungi.</span>
-          <span>Dirancang dengan React, Vite, Tailwind CSS, dan DuckDB di sisi browser.</span>
+        <div className="flex flex-col gap-2 border-t border-white/40 pt-6 text-xs text-slate-500 dark:border-white/10 dark:text-slate-200 md:flex-row md:items-center md:justify-between">
+          <span>
+            &copy; 2025 Created by{' '}
+            <span className="font-semibold">Amanda Listiana Puspanagara • 220660121083</span>
+          </span>
+          <span>
+            Support by <span className="font-semibold">Resilient Academia</span>
+          </span>
+          <span>
+            Dirancang dengan{' '}
+            <span className="font-semibold">React, Vite, Tailwind CSS, dan DuckDB</span> di sisi
+            browser.
+          </span>
         </div>
       </div>
     </footer>

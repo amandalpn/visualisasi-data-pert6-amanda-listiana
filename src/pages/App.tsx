@@ -5,7 +5,17 @@ import { OuladDataProvider } from '@/lib/dataContext';
 import AppRoutes from './routes';
 import { Button } from '@/components/ui/Button';
 import { Dropdown } from '@/components/ui/Dropdown';
-import { Sun, Moon, Monitor, LayoutDashboard, GraduationCap, Users, Sparkles, Menu, X } from 'lucide-react';
+import {
+  Sun,
+  Moon,
+  Monitor,
+  LayoutDashboard,
+  GraduationCap,
+  Users,
+  Sparkles,
+  Menu,
+  X,
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Footer } from '@/components/layout/Footer';
@@ -80,7 +90,7 @@ const AppShell = () => {
           >
             <NavLink to="/" className="flex items-center gap-3 text-lg font-semibold">
               <Sparkles className="h-6 w-6 text-sky-500" />
-              Visualisasi Data - Amanda Listiana
+              Visualisasi Analitik Pembelajaran
             </NavLink>
             <div className="hidden items-center gap-2 text-sm font-medium lg:flex">
               {navLinks.map(({ to, label, icon: Icon }) => (
@@ -119,7 +129,9 @@ const AppShell = () => {
                     <span className="flex items-center gap-3">
                       {item.icon}
                       {item.label}
-                      {theme === item.id && <span className="ml-auto text-xs text-sky-500">Aktif</span>}
+                      {theme === item.id && (
+                        <span className="ml-auto text-xs text-sky-500">Aktif</span>
+                      )}
                     </span>
                   ),
                   onSelect: () => handleThemeChange(item.id as ThemeMode),
@@ -160,7 +172,9 @@ const AppShell = () => {
               <span className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-fuchsia-200/40 blur-3xl dark:bg-fuchsia-500/20" />
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">Navigasi</p>
+                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
+                    Navigasi
+                  </p>
                   <p className="text-lg font-bold text-slate-900 dark:text-white">
                     Visualisasi Data
                   </p>

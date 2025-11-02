@@ -1,17 +1,25 @@
 code_module,code_presentation,band,students
-"Analitik Pendidikan Digital","2024Ganjil",0,1
-"Analitik Pendidikan Digital","2024Ganjil",20,1
-"Analitik Pendidikan Digital","2024Ganjil",60,2
-"Analitik Pendidikan Digital","2024Ganjil",80,2
-"Pemrograman Python Terapan","2024Genap",0,1
-"Pemrograman Python Terapan","2024Genap",20,1
-"Pemrograman Python Terapan","2024Genap",60,1
-"Pemrograman Python Terapan","2024Genap",80,3
-Statistika Dasar,"2024Ganjil",0,1
-Statistika Dasar,"2024Ganjil",20,1
-Statistika Dasar,"2024Ganjil",60,2
-Statistika Dasar,"2024Ganjil",80,2
-"Visualisasi Data Interaktif","2024Genap",0,1
-"Visualisasi Data Interaktif","2024Genap",20,1
-"Visualisasi Data Interaktif","2024Genap",60,2
-"Visualisasi Data Interaktif","2024Genap",80,2
+Analitik Pendidikan Digital,2024Ganjil,30,2
+Analitik Pendidikan Digital,2024Ganjil,40,2
+Analitik Pendidikan Digital,2024Ganjil,60,4
+Analitik Pendidikan Digital,2024Ganjil,70,7
+Analitik Pendidikan Digital,2024Ganjil,80,11
+Analitik Pendidikan Digital,2024Ganjil,90,6
+Pemrograman Python Terapan,2024Genap,30,1
+Pemrograman Python Terapan,2024Genap,40,4
+Pemrograman Python Terapan,2024Genap,60,6
+Pemrograman Python Terapan,2024Genap,70,9
+Pemrograman Python Terapan,2024Genap,80,10
+Pemrograman Python Terapan,2024Genap,90,2
+Statistika Dasar,2024Ganjil,30,1
+Statistika Dasar,2024Ganjil,40,3
+Statistika Dasar,2024Ganjil,60,2
+Statistika Dasar,2024Ganjil,70,4
+Statistika Dasar,2024Ganjil,80,10
+Statistika Dasar,2024Ganjil,90,5
+Visualisasi Data Interaktif,2024Genap,30,2
+Visualisasi Data Interaktif,2024Genap,40,3
+Visualisasi Data Interaktif,2024Genap,60,2
+Visualisasi Data Interaktif,2024Genap,70,10
+Visualisasi Data Interaktif,2024Genap,80,11
+Visualisasi Data Interaktif,2024Genap,90,4

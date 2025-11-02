@@ -1,4 +1,5 @@
-import { create } from 'zustand';
+// src/lib/store.ts
+import { create, type StateCreator } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 export type WeekRange = [number, number];
@@ -56,62 +57,38 @@ const defaultSelection: SelectionState = {
   studentIds: [],
 };
 
-export const useAppStore = create<StoreState>()(
-  devtools(
-    (set) => ({
-      filters: defaultFilters,
-      selection: defaultSelection,
-      ui: defaultUi,
-      setFilter: (key, value) =>
-        set(
-          (state) => ({
-            filters: {
-              ...state.filters,
-              [key]: value,
-            },
-          }),
-          false,
-          `set_${String(key)}`,
-        ),
-      resetFilters: () =>
-        set(
-          {
-            filters: defaultFilters,
-          },
-          false,
-          'reset_filters',
-        ),
-      setSelection: (selection) =>
-        set(
-          (state) => ({
-            selection: {
-              ...state.selection,
-              ...selection,
-            },
-          }),
-          false,
-          'set_selection',
-        ),
-      resetSelection: () =>
-        set(
-          {
-            selection: defaultSelection,
-          },
-          false,
-          'reset_selection',
-        ),
-      setUi: (ui) =>
-        set(
-          (state) => ({
-            ui: {
-              ...state.ui,
-              ...ui,
-            },
-          }),
-          false,
-          'set_ui',
-        ),
-    }),
-    { name: 'oulad-dashboard-store' },
-  ),
-);
+// >>> Penting: beri generics middleware pada StateCreator
+const createStore: StateCreator<
+  StoreState,
+  [['zustand/devtools', never]], // enable argumen ke-3 (action name)
+  []
+> = (set) => ({
+  filters: defaultFilters,
+  selection: defaultSelection,
+  ui: defaultUi,
+
+  setFilter: (key, value) =>
+    set(
+      (state) => ({
+        filters: {
+          ...state.filters,
+          [key]: value,
+        },
+      }),
+      false,
+      `set_${String(key)}`,
+    ),
+
+  resetFilters: () => set(() => ({ filters: { ...defaultFilters } }), false, 'reset_filters'),
+
+  setSelection: (selection) =>
+    set((state) => ({ selection: { ...state.selection, ...selection } }), false, 'set_selection'),
+
+  resetSelection: () =>
+    set(() => ({ selection: { ...defaultSelection } }), false, 'reset_selection'),
+
+  setUi: (ui) => set((state) => ({ ui: { ...state.ui, ...ui } }), false, 'set_ui'),
+});
+
+// Bungkus dengan devtools + beri nama untuk Redux DevTools
+export const useAppStore = create<StoreState>()(devtools(createStore, { name: 'AppStore' }));

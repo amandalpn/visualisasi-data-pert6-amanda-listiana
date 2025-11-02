@@ -18,7 +18,7 @@ export const CardHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElemen
 export const CardTitle = ({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
   <h3
     className={cn(
-      'text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100',
+      'font-heading text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100',
       className,
     )}
     {...props}
@@ -26,7 +26,13 @@ export const CardTitle = ({ className, ...props }: HTMLAttributes<HTMLHeadingEle
 );
 
 export const CardDescription = ({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={cn('text-sm text-slate-500 dark:text-slate-300', className)} {...props} />
+  <p
+    className={cn(
+      'text-sm text-justify leading-relaxed text-slate-500 dark:text-slate-300',
+      className,
+    )}
+    {...props}
+  />
 );
 
 export const CardContent = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (

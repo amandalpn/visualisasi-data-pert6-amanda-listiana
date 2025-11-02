@@ -1,9 +1,8 @@
-import { useRef } from 'react';
+﻿import { useId, useRef } from 'react';
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip as RechartsTooltip,
   XAxis,
@@ -48,6 +47,7 @@ export const BarChartX = ({
   className,
 }: BarChartXProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
+  const gradientId = useId().replace(/:/g, '-');
 
   const handleDownload = async () => {
     if (!ref.current) return;
@@ -72,41 +72,75 @@ export const BarChartX = ({
         </div>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4">
-        <div ref={ref} className="h-full w-full rounded-2xl bg-white/20 p-4 dark:bg-white/5">
-          <ResponsiveContainer width="100%" height={height}>
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.4)" />
-              <XAxis dataKey="key" tick={{ fill: 'var(--chart-axis-color, #334155)' }} />
-              <YAxis tick={{ fill: 'var(--chart-axis-color, #334155)' }} />
-              <RechartsTooltip
-                contentStyle={{
-                  borderRadius: 16,
-                  backgroundColor: 'rgba(15, 23, 42, 0.85)',
-                  border: '1px solid rgba(148, 163, 184, 0.3)',
-                  color: 'white',
-                }}
-                cursor={{ fill: 'rgba(79, 70, 229, 0.08)' }}
-              />
-              _ <Legend />
-              <Bar
-                dataKey="value"
-                fill="url(#glass-bar-gradient)"
-                radius={12} // 👈 PROP 'radius' DITAMBAHKAN DI SINI
-                onClick={({ payload }) => {
-                  if (payload) {
-                    onBarClick?.(payload.key as string, payload as BarChartDatum);
-                  }
-                }}
-              />
-              <defs>
-                <linearGradient id="glass-bar-gradient" x1="0" x2="1" y1="0" y2="1">
-                  _ <stop offset="0" stopColor="rgba(14,165,233,0.9)" />
-                  <stop offset="1" stopColor="rgba(139,92,246,0.7)" />
-                </linearGradient>
-              </defs>
-            </BarChart>
-            {/* 👆 PERBAIKAN SELESAI DI SINI 👆 */}
-          </ResponsiveContainer>
+        <div
+          ref={ref}
+          className="relative h-full w-full overflow-hidden rounded-[28px] p-5 backdrop-blur-2xl"
+          style={{
+            background: 'var(--chart-surface-bg)',
+            border: '1px solid var(--chart-surface-border)',
+            boxShadow: 'var(--chart-surface-shadow)',
+          }}
+        >
+          <div
+            className="pointer-events-none absolute inset-0 opacity-70"
+            style={{ background: 'var(--chart-surface-overlay)' }}
+          />
+          <div className="relative z-10 h-full w-full">
+            <ResponsiveContainer width="100%" height={height}>
+              <BarChart data={data} barSize={28}>
+                <CartesianGrid
+                  strokeDasharray="4 6"
+                  stroke="var(--chart-grid-color)"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="key"
+                  tick={{ fill: 'var(--chart-axis-color)' }}
+                  tickLine={false}
+                  axisLine={false}
+                  padding={{ left: 16, right: 16 }}
+                />
+                <YAxis
+                  tick={{ fill: 'var(--chart-axis-color)' }}
+                  tickLine={false}
+                  axisLine={false}
+                  width={48}
+                />
+                <RechartsTooltip
+                  cursor={{ fill: 'rgba(56,189,248,0.08)' }}
+                  contentStyle={{
+                    borderRadius: 18,
+                    backgroundColor: 'var(--chart-tooltip-bg)',
+                    border: '1px solid var(--chart-tooltip-border)',
+                    color: 'var(--chart-tooltip-color)',
+                    boxShadow: '0 20px 46px rgba(14, 165, 233, 0.22)',
+                    backdropFilter: 'blur(12px)',
+                  }}
+                  labelStyle={{ color: 'var(--chart-tooltip-color)', fontWeight: 600 }}
+                  itemStyle={{ color: 'var(--chart-tooltip-color)', fontWeight: 500 }}
+                />
+                <Bar
+                  dataKey="value"
+                  fill={`url(#${gradientId}-bar)`}
+                  radius={[14, 14, 10, 10]}
+                  stroke="rgba(255,255,255,0.55)"
+                  strokeWidth={1}
+                  onClick={({ payload }) => {
+                    if (payload) {
+                      onBarClick?.(payload.key as string, payload as BarChartDatum);
+                    }
+                  }}
+                />
+                <defs>
+                  <linearGradient id={`${gradientId}-bar`} x1="0" x2="1" y1="0" y2="1">
+                    <stop offset="0%" stopColor="var(--chart-series-1)" stopOpacity="0.95" />
+                    <stop offset="55%" stopColor="var(--chart-series-3)" stopOpacity="0.92" />
+                    <stop offset="100%" stopColor="var(--chart-series-2)" stopOpacity="0.9" />
+                  </linearGradient>
+                </defs>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
       {insight && (

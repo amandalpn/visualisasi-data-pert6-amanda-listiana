@@ -1,25 +1,29 @@
 code_module,code_presentation,week,sum_clicks,students_count,avg_final_score
-"Analitik Pendidikan Digital","2024Ganjil",-1,168,6,56.5
-"Analitik Pendidikan Digital","2024Ganjil",0,570,6,56.5
-"Analitik Pendidikan Digital","2024Ganjil",2,623,6,56.5
-"Analitik Pendidikan Digital","2024Ganjil",4,682,6,56.5
-"Analitik Pendidikan Digital","2024Ganjil",6,560,5,56.5
-"Analitik Pendidikan Digital","2024Ganjil",8,557,5,56.5
-"Pemrograman Python Terapan","2024Genap",-1,184,6,60.3
-"Pemrograman Python Terapan","2024Genap",0,645,6,60.3
-"Pemrograman Python Terapan","2024Genap",2,670,6,60.3
-"Pemrograman Python Terapan","2024Genap",4,698,6,60.3
-"Pemrograman Python Terapan","2024Genap",6,680,6,60.3
-"Pemrograman Python Terapan","2024Genap",8,633,5,60.3
-Statistika Dasar,"2024Ganjil",-1,193,6,60.2
-Statistika Dasar,"2024Ganjil",0,615,6,60.2
-Statistika Dasar,"2024Ganjil",2,698,6,60.2
-Statistika Dasar,"2024Ganjil",4,757,6,60.2
-Statistika Dasar,"2024Ganjil",6,635,5,60.2
-Statistika Dasar,"2024Ganjil",8,502,5,60.2
-"Visualisasi Data Interaktif","2024Genap",-1,173,6,59.5
-"Visualisasi Data Interaktif","2024Genap",0,564,6,59.5
-"Visualisasi Data Interaktif","2024Genap",2,627,6,59.5
-"Visualisasi Data Interaktif","2024Genap",4,659,6,59.5
-"Visualisasi Data Interaktif","2024Genap",6,601,6,59.5
-"Visualisasi Data Interaktif","2024Genap",8,576,5,59.5
+Analitik Pendidikan Digital,2024Ganjil,-1,14400,32,76.6
+Analitik Pendidikan Digital,2024Ganjil,0,14747,32,76.6
+Analitik Pendidikan Digital,2024Ganjil,2,14370,32,76.6
+Analitik Pendidikan Digital,2024Ganjil,4,14056,32,76.6
+Analitik Pendidikan Digital,2024Ganjil,6,13989,32,76.6
+Analitik Pendidikan Digital,2024Ganjil,8,14119,32,76.6
+Analitik Pendidikan Digital,2024Ganjil,10,13328,32,76.6
+Pemrograman Python Terapan,2024Genap,-1,14612,32,73.7
+Pemrograman Python Terapan,2024Genap,0,15709,32,73.7
+Pemrograman Python Terapan,2024Genap,2,15287,32,73.7
+Pemrograman Python Terapan,2024Genap,4,14706,32,73.7
+Pemrograman Python Terapan,2024Genap,6,15260,32,73.7
+Pemrograman Python Terapan,2024Genap,8,16393,32,73.7
+Pemrograman Python Terapan,2024Genap,10,15879,32,73.7
+Statistika Dasar,2024Ganjil,-1,13806,32,59.6
+Statistika Dasar,2024Ganjil,0,15661,32,59.6
+Statistika Dasar,2024Ganjil,2,14346,32,59.6
+Statistika Dasar,2024Ganjil,4,14635,32,59.6
+Statistika Dasar,2024Ganjil,6,11197,25,59.6
+Statistika Dasar,2024Ganjil,8,11291,25,59.6
+Statistika Dasar,2024Ganjil,10,11516,25,59.6
+Visualisasi Data Interaktif,2024Genap,-1,14113,32,75.5
+Visualisasi Data Interaktif,2024Genap,0,14987,32,75.5
+Visualisasi Data Interaktif,2024Genap,2,14029,32,75.5
+Visualisasi Data Interaktif,2024Genap,4,14410,32,75.5
+Visualisasi Data Interaktif,2024Genap,6,15568,32,75.5
+Visualisasi Data Interaktif,2024Genap,8,15642,32,75.5
+Visualisasi Data Interaktif,2024Genap,10,14781,32,75.5

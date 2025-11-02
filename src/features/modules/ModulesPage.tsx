@@ -1,8 +1,17 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Save, Columns } from 'lucide-react';
-import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender, createColumnHelper, type SortingState } from '@tanstack/react-table';
+import { Save, Columns, Filter as FilterIcon, ChevronDown, Check } from 'lucide-react';
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getPaginationRowModel,
+  flexRender,
+  createColumnHelper,
+  type SortingState,
+  type PaginationState,
+} from '@tanstack/react-table';
 import { saveAs } from 'file-saver';
 import { useOuladData } from '@/lib/dataContext';
 import { useAppStore } from '@/lib/store';
@@ -13,18 +22,22 @@ import { Button } from '@/components/ui/Button';
 import { Dropdown } from '@/components/ui/Dropdown';
 import { Dialog, DialogContent } from '@/components/ui/Dialog';
 import { Badge } from '@/components/ui/Badge';
-import { GlobalFilterBar } from '@/features/filters/GlobalFilterBar';
+// ⬇️ ganti GlobalFilterBar dengan Sidebar/Drawer
+import { FilterSidebar, FilterDrawer } from '@/features/filters/FilterSidebar';
 import { craftHistogramInsight, craftScatterInsight, filterActivities } from '@/lib/analytics';
 import type { StudentActivityRecord } from '@/lib/types';
 import { formatNumber } from '@/lib/format';
 
 const columnHelper = createColumnHelper<StudentActivityRecord>();
+const ALL_PAGE_SIZE = Number.MAX_SAFE_INTEGER;
 
 const ModulesPage = () => {
   const params = useParams<{ moduleId?: string }>();
   const { data, loading } = useOuladData();
   const filters = useAppStore((state) => state.filters);
   const setSelection = useAppStore((state) => state.setSelection);
+
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
   const [selectedStudent, setSelectedStudent] = useState<StudentActivityRecord | null>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({
@@ -33,9 +46,12 @@ const ModulesPage = () => {
     highest_education: true,
     age_band: true,
   });
+  const [openFilter, setOpenFilter] = useState(false); // ⬅️ state untuk drawer di mobile
 
   const moduleParam = params.moduleId?.split('-');
-  const moduleFilter = moduleParam ? { code_module: moduleParam[0], code_presentation: moduleParam[1] } : null;
+  const moduleFilter = moduleParam
+    ? { code_module: moduleParam[0], code_presentation: moduleParam[1] }
+    : null;
 
   const filteredStudents = useMemo(() => {
     if (!data) return [];
@@ -78,16 +94,27 @@ const ModulesPage = () => {
         x: student.total_clicks,
         y: student.final_score,
         group: student.final_score >= 40 ? 'Lulus' : 'Berisiko',
-        student,
       })),
     [filteredStudents],
   );
+
+  const studentById = useMemo(() => {
+    const map = new Map<string, StudentActivityRecord>();
+    filteredStudents.forEach((student) => {
+      map.set(student.id_student, student);
+    });
+    return map;
+  }, [filteredStudents]);
 
   const columns = useMemo(
     () => [
       columnHelper.accessor('id_student', {
         header: 'ID Mahasiswa',
-        cell: (info) => <span className="font-semibold text-slate-800 dark:text-slate-100">{info.getValue()}</span>,
+        cell: (info) => (
+          <span className="font-semibold text-slate-800 dark:text-slate-100">
+            {info.getValue()}
+          </span>
+        ),
       }),
       columnHelper.accessor('outcome', {
         header: 'Outcome',
@@ -135,12 +162,15 @@ const ModulesPage = () => {
     state: {
       sorting,
       columnVisibility,
+      pagination,
     },
     enableSorting: true,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const exportCsv = () => {
@@ -159,6 +189,22 @@ const ModulesPage = () => {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, 'module-students.csv');
   };
+
+  useEffect(() => {
+    setPagination((prev) => ({
+      pageIndex: 0,
+      pageSize: prev.pageSize,
+    }));
+  }, [filteredStudents.length]);
+
+  const totalRows = filteredStudents.length;
+  const pageSizeValue =
+    pagination.pageSize === ALL_PAGE_SIZE ? Math.max(totalRows, 1) : pagination.pageSize;
+  const currentRows = table.getRowModel().rows.length;
+  const startRow = totalRows === 0 ? 0 : pagination.pageIndex * pageSizeValue + 1;
+  const endRow = totalRows === 0 ? 0 : startRow + currentRows - 1;
+  const pageSizeLabel = pagination.pageSize === ALL_PAGE_SIZE ? 'Semua' : String(pagination.pageSize);
+  const pageSizeOptions = [10, 20, 30, 50];
 
   if (loading || !data) {
     return (
@@ -184,104 +230,220 @@ const ModulesPage = () => {
         <header className="space-y-4 rounded-3xl bg-gradient-to-r from-emerald-500/20 via-sky-500/10 to-blue-500/20 p-6 text-slate-900 shadow-glass backdrop-blur-2xl dark:text-white">
           <h1 className="text-3xl font-bold">{moduleHeading}</h1>
           <p className="max-w-4xl text-sm leading-6 text-slate-700 dark:text-slate-200">
-            Gunakan halaman ini untuk menganalisis performa mahasiswa pada modul tertentu. Scatter plot mendukung seleksi untuk menyorot mahasiswa at-risk, sedangkan histogram memperlihatkan distribusi nilai yang terjadi.
+            Gunakan halaman ini untuk menganalisis performa mahasiswa pada modul tertentu. Scatter
+            plot mendukung seleksi untuk menyorot mahasiswa at-risk, sedangkan histogram
+            memperlihatkan distribusi nilai yang terjadi.
           </p>
         </header>
 
-        <GlobalFilterBar />
+        {/* Tombol filter untuk mobile */}
+        <div className="flex items-center justify-end lg:hidden">
+          <Button variant="ghost" size="sm" onClick={() => setOpenFilter(true)}>
+            <FilterIcon className="mr-2 h-4 w-4" /> Filter
+          </Button>
+        </div>
 
-        <section className="grid gap-8 lg:grid-cols-2">
-          <HistogramX
-            title="Distribusi Nilai Modul"
-            description="Histogram skor akhir mahasiswa yang terkait modul saat ini."
-            data={histogramData}
-            insight={craftHistogramInsight(histogramSummary)}
-          />
+        {/* Layout 2 kolom: sidebar (desktop) + konten */}
+        <div className="grid gap-6 lg:grid-cols-[var(--fsb-w,320px),1fr]">
+          {/* Sidebar hanya tampil di desktop */}
+          <FilterSidebar className="hidden lg:block" />
 
-          <ScatterX
-            title="Aktivitas vs Skor Akhir"
-            description="Klik titik untuk membuka detail mahasiswa dan gunakan brush untuk seleksi massal."
-            data={scatterData}
-            insight={craftScatterInsight(filteredStudents)}
-            onPointClick={(datum) => setSelectedStudent(datum.student as StudentActivityRecord)}
-            onBrushSelection={(ids) => setSelection({ studentIds: ids })}
-          />
-        </section>
-
-        <Card className="bg-white/60 dark:bg-slate-900/80">
-          <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <CardTitle>Daftar Mahasiswa</CardTitle>
-              <CardDescription>
-                Tabel interaktif dengan sort, visibilitas kolom, dan ekspor CSV untuk modul yang dipilih.
-              </CardDescription>
-            </div>
-            <div className="flex items-center gap-3">
-              <Dropdown
-                align="end"
-                trigger={
-                  <Button variant="secondary" size="sm">
-                    <Columns className="mr-2 h-4 w-4" />
-                    Kolom
-                  </Button>
-                }
-                items={table.getAllLeafColumns().map((column) => ({
-                  id: column.id,
-                  label: (
-                    <span className="flex items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={column.getIsVisible()}
-                        onChange={(event) => column.toggleVisibility(event.target.checked)}
-                        className="h-3 w-3 rounded border-slate-300 accent-sky-500"
-                      />
-                      {column.columnDef.header as string}
-                    </span>
-                  ),
-                  onSelect: () => column.toggleVisibility(),
-                }))}
+          {/* Konten utama */}
+          <div className="space-y-8">
+            <section className="grid gap-8 lg:grid-cols-2">
+              <HistogramX
+                title="Distribusi Nilai Modul"
+                description="Histogram skor akhir mahasiswa yang terkait modul saat ini."
+                data={histogramData}
+                insight={craftHistogramInsight(histogramSummary)}
               />
-              <Button variant="primary" size="sm" onClick={exportCsv}>
-                <Save className="mr-2 h-4 w-4" />
-                Ekspor CSV
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="max-h-[480px] overflow-auto rounded-3xl border border-slate-200/70 bg-white/60 p-2 dark:border-slate-700/60 dark:bg-white/5">
-              <table className="min-w-full border-separate border-spacing-x-0 border-spacing-y-2 text-sm text-slate-700 dark:text-slate-200">
-                <thead className="sticky top-0 z-10 rounded-2xl bg-white/95 text-xs font-semibold uppercase tracking-wide text-slate-500 backdrop-blur-xl dark:bg-slate-900/90 dark:text-slate-300">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
-                        <th key={header.id} className="px-4 py-3 text-left">
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(header.column.columnDef.header, header.getContext())}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody>
-                  {table.getRowModel().rows.map((row) => (
-                    <tr key={row.id} className="group">
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="bg-white/90 px-4 py-3 align-middle text-sm text-slate-700 transition first:rounded-l-2xl last:rounded-r-2xl group-hover:bg-sky-50/80 dark:bg-white/10 dark:text-slate-200 dark:group-hover:bg-slate-800/60"
-                        >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
 
+              <ScatterX
+                title="Aktivitas vs Skor Akhir"
+                description="Klik titik untuk membuka detail mahasiswa dan gunakan brush untuk seleksi massal."
+                data={scatterData}
+                insight={craftScatterInsight(filteredStudents)}
+                onPointClick={(id) => {
+                  const student = studentById.get(id);
+                  if (student) {
+                    setSelectedStudent(student);
+                  }
+                }}
+                onBrushSelection={(ids) => setSelection({ studentIds: ids })}
+              />
+            </section>
+
+            <Card className="bg-white/60 dark:bg-slate-900/80">
+              <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <CardTitle>Daftar Mahasiswa</CardTitle>
+                  <CardDescription>
+                    Tabel interaktif dengan sort, visibilitas kolom, dan ekspor CSV untuk modul yang
+                    dipilih.
+                  </CardDescription>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Dropdown
+                    align="end"
+                    trigger={
+                      <Button variant="secondary" size="sm">
+                        <Columns className="mr-2 h-4 w-4" />
+                        Kolom
+                      </Button>
+                    }
+                    items={table.getAllLeafColumns().map((column) => ({
+                      id: column.id,
+                      label: (
+                        <span className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            checked={column.getIsVisible()}
+                            onChange={(event) => column.toggleVisibility(event.target.checked)}
+                            className="h-3 w-3 rounded border-slate-300 accent-sky-500"
+                          />
+                          {column.columnDef.header as string}
+                        </span>
+                      ),
+                      onSelect: () => column.toggleVisibility(),
+                    }))}
+                  />
+                  <Button variant="primary" size="sm" onClick={exportCsv}>
+                    <Save className="mr-2 h-4 w-4" />
+                    Ekspor CSV
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-4 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-600 dark:text-slate-300">Tampilkan</span>
+                    <Dropdown
+                      align="start"
+                      trigger={
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-xl transition hover:border-sky-300 hover:bg-white/20 dark:border-white/15 dark:bg-white/10 dark:text-slate-100"
+                        >
+                          {pageSizeLabel}
+                          <ChevronDown className="h-4 w-4 opacity-70" />
+                        </button>
+                      }
+                      items={[
+                        ...pageSizeOptions.map((size) => ({
+                          id: String(size),
+                          label: (
+                            <span className="flex items-center gap-2">
+                              {size}
+                              {pagination.pageSize === size && (
+                                <Check className="h-4 w-4 text-sky-500" />
+                              )}
+                            </span>
+                          ),
+                          onSelect: () =>
+                            setPagination({
+                              pageIndex: 0,
+                              pageSize: size,
+                            }),
+                        })),
+                        {
+                          id: 'all',
+                          label: (
+                            <span className="flex items-center gap-2">
+                              Semua
+                              {pagination.pageSize === ALL_PAGE_SIZE && (
+                                <Check className="h-4 w-4 text-sky-500" />
+                              )}
+                            </span>
+                          ),
+                          onSelect: () =>
+                            setPagination({
+                              pageIndex: 0,
+                              pageSize: ALL_PAGE_SIZE,
+                            }),
+                        },
+                      ]}
+                    />
+                    <span className="text-slate-500 dark:text-slate-400">baris</span>
+                  </div>
+                  <div className="flex flex-col gap-2 text-slate-600 dark:text-slate-300 md:flex-row md:items-center md:gap-4">
+                    <span>
+                      {totalRows === 0
+                        ? 'Tidak ada data'
+                        : `Menampilkan ${startRow}-${endRow} dari ${totalRows} mahasiswa`}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="rounded-lg"
+                      >
+                        Prev
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="rounded-lg"
+                      >
+                        Next
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setPagination({
+                            pageIndex: 0,
+                            pageSize: ALL_PAGE_SIZE,
+                          })
+                        }
+                        disabled={pagination.pageSize === ALL_PAGE_SIZE}
+                        className="rounded-lg"
+                      >
+                        All
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                <div className="max-h-[480px] overflow-auto rounded-3xl border border-slate-200/70 bg-white/60 p-2 dark:border-slate-700/60 dark:bg-white/5">
+                  <table className="min-w-full border-separate border-spacing-x-0 border-spacing-y-2 text-sm text-slate-700 dark:text-slate-200">
+                    <thead className="sticky top-0 z-10 rounded-2xl bg-white/95 text-xs font-semibold uppercase tracking-wide text-slate-500 backdrop-blur-xl dark:bg-slate-900/90 dark:text-slate-300">
+                      {table.getHeaderGroups().map((headerGroup) => (
+                        <tr key={headerGroup.id}>
+                          {headerGroup.headers.map((header) => (
+                            <th key={header.id} className="px-4 py-3 text-left">
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(header.column.columnDef.header, header.getContext())}
+                            </th>
+                          ))}
+                        </tr>
+                      ))}
+                    </thead>
+                    <tbody>
+                      {table.getRowModel().rows.map((row) => (
+                        <tr key={row.id} className="group">
+                          {row.getVisibleCells().map((cell) => (
+                            <td
+                              key={cell.id}
+                              className="bg-white/90 px-4 py-3 align-middle text-sm text-slate-700 transition first:rounded-l-2xl last:rounded-r-2xl group-hover:bg-sky-50/80 dark:bg-white/10 dark:text-slate-200 dark:group-hover:bg-slate-800/60"
+                            >
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Modal detail mahasiswa */}
         <Dialog open={!!selectedStudent} onOpenChange={(open) => !open && setSelectedStudent(null)}>
           <DialogContent
             title="Detail Mahasiswa"
@@ -300,11 +462,15 @@ const ModulesPage = () => {
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-wide text-slate-500">Skor Akhir</p>
-                    <p className="text-lg font-semibold">{formatNumber(selectedStudent.final_score)}</p>
+                    <p className="text-lg font-semibold">
+                      {formatNumber(selectedStudent.final_score)}
+                    </p>
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-wide text-slate-500">Total Klik</p>
-                    <p className="text-lg font-semibold">{formatNumber(selectedStudent.total_clicks)}</p>
+                    <p className="text-lg font-semibold">
+                      {formatNumber(selectedStudent.total_clicks)}
+                    </p>
                   </div>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
@@ -314,7 +480,9 @@ const ModulesPage = () => {
                   <DetailRow label="Disabilitas" value={selectedStudent.disability} />
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-slate-500">Aktivitas Mingguan</p>
+                  <p className="text-xs uppercase tracking-wide text-slate-500">
+                    Aktivitas Mingguan
+                  </p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {selectedStudent.weeks.map((week) => (
                       <span
@@ -330,6 +498,9 @@ const ModulesPage = () => {
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Drawer filter untuk mobile */}
+        <FilterDrawer open={openFilter} onClose={() => setOpenFilter(false)} />
       </motion.div>
     </main>
   );
@@ -345,4 +516,3 @@ const DetailRow = ({ label, value }: { label: string; value: string }) => (
 );
 
 export default ModulesPage;
-

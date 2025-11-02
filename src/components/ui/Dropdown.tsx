@@ -42,7 +42,7 @@ export const Dropdown = ({ trigger, items, align = 'start', className }: Dropdow
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             className={cn(
-              'absolute top-[calc(100%+8px)] z-50 w-56 rounded-2xl border border-slate-200/70 bg-white/95 p-2 shadow-xl shadow-slate-900/10 ring-1 ring-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/90 dark:ring-white/10',
+              'absolute top-[calc(100%+8px)] z-50 w-56 rounded-2xl border border-white/40 bg-white/20 p-2 shadow-[0_18px_45px_rgba(15,23,42,0.22)] ring-1 ring-white/20 backdrop-blur-2xl dark:border-white/15 dark:bg-slate-900/70 dark:ring-white/10',
               align === 'start' ? 'left-0' : 'right-0',
             )}
           >
@@ -50,7 +50,7 @@ export const Dropdown = ({ trigger, items, align = 'start', className }: Dropdow
               <button
                 key={item.id}
                 type="button"
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 dark:text-slate-100 dark:hover:bg-white/10"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 dark:text-slate-100 dark:hover:bg-white/10"
                 onClick={() => {
                   item.onSelect();
                   setOpen(false);
