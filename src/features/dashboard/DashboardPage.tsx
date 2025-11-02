@@ -30,7 +30,6 @@ import { ChoroplethMap } from '@/components/map/ChoroplethMap';
 import { formatNumber } from '@/lib/format';
 import { FilterSidebar, FilterDrawer } from '@/features/filters/FilterSidebar';
 
-
 const DashboardPage = () => {
   const { data, loading, error } = useOuladData();
   const navigate = useNavigate();
@@ -341,11 +340,14 @@ const DashboardPage = () => {
                 isClickable={false}
                 formatCategoryLabel={shortModuleLabel}
                 xTickFontSize={10}
-                xTickAngle={-12}
-                xTickDx={16} // ⬅️ geser label lebih ke kanan
-                xTickDy={4}
-                leftMargin={32} // ⬅️ tambah ruang kiri (di luar plot)
-                leftPadding={46} // ⬅️ tambah padding kiri (di sumbu X)
+                xTickAngle={-15}
+                xTickDx={40} // ⬅️ geser label lebih ke kanan
+                xTickDy={5}
+                leftMargin={0} // ⬅️ tambah ruang kiri (di luar plot)
+                leftPadding={0} // ⬅️ tambah padding kiri (di sumbu X)
+                showGridVertical
+                showGridHorizontal
+                gridDash="3 6"
               />
 
               <LineChartX

@@ -45,6 +45,9 @@ export type BarChartXProps = {
   xTickDy?: number;
   leftMargin?: number; // ⬅️ baru
   leftPadding?: number; // ⬅️ baru
+  showGridHorizontal?: boolean; // default: true
+  showGridVertical?: boolean; // default: false (biar tidak mengubah chart lain)
+  gridDash?: string; // default: '3 6'
 };
 
 export const BarChartX = ({
@@ -64,6 +67,9 @@ export const BarChartX = ({
   xTickDy = 4,
   leftMargin = 28, // ⬅️ ruang di luar plot area
   leftPadding = 40, // ⬅️ ruang di dalam sumbu X
+  showGridHorizontal = true,
+  showGridVertical = false,
+  gridDash = '3 6',
 }: BarChartXProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const gradientId = useId().replace(/:/g, '-');
@@ -130,6 +136,12 @@ export const BarChartX = ({
                 barSize={28}
                 margin={{ top: 8, right: 12, bottom: xTickAngle ? 40 : 16, left: leftMargin }} // ⬅️
               >
+                <CartesianGrid
+                  strokeDasharray={gridDash}
+                  stroke="var(--chart-grid-color)"
+                  horizontal={showGridHorizontal}
+                  vertical={showGridVertical}
+                />
                 <XAxis
                   dataKey="key"
                   tick={<CustomTick />}

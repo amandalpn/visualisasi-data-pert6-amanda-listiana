@@ -87,25 +87,27 @@ export const Footer = () => {
             </p>
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                <MapPin className="h-4 w-4 text-sky-500 dark:text-sky-300" />
+                <MapPin className="h-4 w-4 md:h-5 md:w-5 shrink-0 text-sky-500 dark:text-sky-300" />
                 Sumedang, Jawa Barat
               </li>
+
               <li className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                <Mail className="h-4 w-4 text-sky-500 dark:text-sky-300" />
+                <Mail className="h-4 w-4 md:h-5 md:w-5 shrink-0 text-sky-500 dark:text-sky-300" />
                 <a
                   href="mailto:amandalpn394@gmail.com"
-                  className="hover:text-sky-600 dark:hover:text-sky-200"
+                  className="hover:text-sky-600 dark:hover:text-sky-200 whitespace-nowrap"
                 >
                   amandalpn394@gmail.com
                 </a>
               </li>
+
               <li className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                <Globe className="h-4 w-4 text-sky-500 dark:text-sky-300" />
+                <Globe className="h-4 w-4 md:h-5 md:w-5 shrink-0 text-sky-500 dark:text-sky-300" />
                 <a
                   href="https://visualisasi-data-pert6-amanda-listi.vercel.app"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-sky-600 dark:hover:text-sky-200"
+                  className="hover:text-sky-600 dark:hover:text-sky-200 whitespace-nowrap"
                 >
                   visualisasi-data.live
                 </a>
