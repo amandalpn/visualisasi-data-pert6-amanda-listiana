@@ -1,9 +1,11 @@
-
 # Visualisasi Data - Amanda Listiana
 
 Visualisasi data interaktif untuk tugas *Visualisasi Data* berbasis dataset Open University Learning Analytics Dataset (OULAD). Aplikasi ini dibangun dengan Vite + React + TypeScript dan memadukan gaya glassmorphism, dark/light mode adaptif, serta enam jenis visualisasi (bar, line, pie, histogram, scatter, choropleth) dengan interaksi filter lintas komponen.
 
-## ✨ Sorotan Fitur
+**🔗 Live Demo:** https://visualisasi-data-pert6-amanda-listi.vercel.app/  
+**🛠️ Source Code:** https://github.com/amandalpn/visualisasi-data-pert6-amanda-listiana
+
+## ✨ Fitur Utama
 - **Dashboard responsif** dengan kartu KPI, bar chart outcome, line chart aktivitas mingguan, donut demografi, histogram nilai, dan peta choropleth UK.
 - **Explorer Modul & Mahasiswa**: scatter plot dengan brush, histogram, tabel TanStack virtualized, sparkline per mahasiswa, ekspor CSV/PNG, serta modal detail.
 - **Insight otomatis** dalam bahasa Indonesia yang memperbarui narasi sesuai filter aktif dan dapat disalin.
@@ -33,7 +35,7 @@ scripts/
   generate_synthetic.mjs
 ```
 
-## 🚀 Mulai
+## 🚀 Cara Menjalankan
 ### Prasyarat
 - Node.js ≥ 20
 - npm ≥ 10
@@ -48,8 +50,12 @@ npm install
    ```bash
    npm run fetch:data
    ```
-   Jika gagal, unduh manual dari https://analyse.kmi.open.ac.uk/open_dataset/download kemudian simpan file CSV berikut di `public/data/oulad/raw/`:  
+   Jika gagal, unduh manual dari situs OULAD (utama) atau jika error bisa mengunduh dari alternatif UCI ML/Kaggle, kemudian simpan file CSV berikut di `public/data/oulad/raw/`:  
    `studentInfo.csv`, `courses.csv`, `studentVle.csv`, `assessments.csv`, `studentAssessment.csv`, `vle.csv`.
+
+> Unduh OULAD (resmi): https://analyse.kmi.open.ac.uk/open-dataset
+> UCI ML Repo (OULAD) Alternatif 1: https://archive.ics.uci.edu/dataset/349/open%2Buniversity%2Blearning%2Banalytics%2Bdataset?
+> Kaggle (salinan komunitas) - Alternatif 2: https://www.kaggle.com/datasets/anlgrbz/student-demographics-online-education-dataoulad
 
 2. **Siapkan agregasi**:
    ```bash
@@ -83,11 +89,6 @@ npm run lint
 npm run format
 ```
 
-## 🌐 Deploy ke Vercel / Netlify
-1. Jalankan `npm run build`.
-2. Deploy folder `dist/` ke Vercel/Netlify dengan pengaturan standar Vite (command `npm run build`, output `dist`).
-3. Pastikan file agregasi (`public/data/oulad/agg/*`) ikut terdeploy.
-
 ## 🧠 Insight Otomatis
 Setiap visualisasi menampilkan paragraf insight 2–4 kalimat yang menjelaskan:
 - Tujuan chart & cara membaca.
@@ -100,5 +101,3 @@ Insight ini juga dirangkum di halaman *Insight* dan dapat disalin melalui tombol
 ## 🔐 Lisensi & Etika Data
 - OULAD dirilis untuk tujuan riset pendidikan secara anonym. Gunakan sesuai ketentuan Open University.
 - Dataset sintetis hanya untuk demo/internal; tidak mewakili data riil mahasiswa.
-
-Selamat bereksplorasi! 🎓📊
